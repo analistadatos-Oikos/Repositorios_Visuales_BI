@@ -3,36 +3,126 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Portal Corporativo | OIKOS</title>
+    <title>Portal de Inteligencia de Datos | OIKOS</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&display=swap" rel="stylesheet">
     <style>
-        /* Eliminamos margenes y scrolls para que se vea nativo */
+        :root {
+            --primary: #004a99;
+            --dark: #0f172a;
+            --accent: #3b82f6;
+        }
+
         body, html {
             margin: 0;
             padding: 0;
             height: 100%;
             width: 100%;
             overflow: hidden;
-            background-color: #ffffff;
+            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+            font-family: 'Plus Jakarta Sans', sans-serif;
         }
 
-        /* El iframe que contiene toda la lógica de validación y el BI */
+        /* Contenedor principal para evitar saltos visuales */
+        .app-container {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Barra superior elegante (Opcional, si quieres marca) */
+        header {
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(10px);
+            height: 60px;
+            display: flex;
+            align-items: center;
+            padding: 0 30px;
+            border-bottom: 1px solid rgba(0,0,0,0.05);
+            z-index: 10;
+        }
+
+        header img {
+            height: 30px;
+        }
+
+        header span {
+            margin-left: 15px;
+            font-weight: 600;
+            color: var(--dark);
+            letter-spacing: -0.5px;
+        }
+
+        /* El Iframe que trae tu Apps Script */
         iframe {
-            position: absolute;
-            top: 0;
-            left: 0;
+            flex-grow: 1;
             width: 100%;
             height: 100%;
             border: none;
+            /* Suaviza la aparición */
+            animation: fadeIn 1s ease-in-out;
         }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        /* Overlay de carga pro */
+        #loader-overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: #ffffff;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            transition: opacity 0.5s ease;
+        }
+
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid var(--primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
     </style>
 </head>
 <body>
 
-    <iframe 
-        src="https://script.google.com/a/macros/oikos.com.co/s/AKfycbwytBZRm3WY7LlNaYL1a6FhOnR_M5Lj-TGAPdNMXsB0jIfPSPaCFhqsXXYZigTceEmv/exec" 
-        allow="autoplay; camera; microphone; fullscreen" 
-        allowfullscreen="true">
-    </iframe>
+    <div id="loader-overlay">
+        <div class="spinner"></div>
+        <p style="margin-top: 20px; color: #64748b; font-weight: 500;">Iniciando sistema seguro...</p>
+    </div>
 
+    <div class="app-container">
+        <header>
+            <img src="https://oikos.com.co/wp-content/uploads/2021/03/Logo-Oikos-Horizontal-Color.png" alt="OIKOS">
+            <span>| Analytics Portal</span>
+        </header>
+
+        <iframe 
+            id="mainFrame"
+            src="https://script.google.com/a/macros/oikos.com.co/s/AKfycbxTXiBKD4Z0eCK8kqRUcwYHhwB4Rw3ypZEEH2Zm09NjkpYxukhfotmhkGFf5rpWoiDsZw/exec" 
+            allowfullscreen="true"
+            onload="hideLoader()">
+        </iframe>
+    </div>
+
+    <script>
+        function hideLoader() {
+            const loader = document.getElementById('loader-overlay');
+            loader.style.opacity = '0';
+            setTimeout(() => {
+                loader.style.display = 'none';
+            }, 500);
+        }
+    </script>
 </body>
 </html>
