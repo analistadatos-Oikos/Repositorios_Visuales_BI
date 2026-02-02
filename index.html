@@ -2,29 +2,41 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Visualizador de Reportes</title>
+    <title>Reporte Interactivo</title>
     <style>
-        /* Este código hace que el reporte ocupe toda la pantalla sin bordes */
-        body, html {
-            margin: 0;
-            padding: 0;
-            height: 100%;
-            width: 100%;
-            overflow: hidden;
-            background-color: #f4f4f4;
+        body, html { 
+            margin: 0; 
+            padding: 0; 
+            height: 100%; 
+            width: 100%; 
+            overflow: hidden; 
+            background: #fff; 
         }
-        iframe {
+
+        .wrapper {
             position: absolute;
+            /* El truco: hacemos el contenedor un poco más pequeño para 'cortar' los bordes del iframe */
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
+            overflow: hidden;
+        }
+
+        iframe {
+            position: absolute;
+            /* Estiramos el iframe más allá de los bordes para esconder los avisos */
+            top: -40px; /* Esconde la barra superior de Looker */
+            left: -10px;
+            width: calc(100% + 20px); 
+            height: calc(100% + 50px);
             border: none;
         }
     </style>
 </head>
 <body>
-    <iframe src="https://script.google.com/macros/s/AKfycbzBn9MZ014byxV4MT8qwxgCMUIYHrRI_t0BQP4AS_s-lgmr-BCNPfjpzhuLKlTfHycD/exec" allowfullscreen="true"></iframe>
+    <div class="wrapper">
+        <iframe src="https://script.google.com/macros/s/AKfycbzBn9MZ014byxV4MT8qwxgCMUIYHrRI_t0BQP4AS_s-lgmr-BCNPfjpzhuLKlTfHycD/exec" allowfullscreen="true"></iframe>
+    </div>
 </body>
 </html>
