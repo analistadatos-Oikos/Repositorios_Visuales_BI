@@ -1,57 +1,38 @@
 <!DOCTYPE html>
-<html>
+<html lang="es">
 <head>
-    <base target="_top">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portal Corporativo | OIKOS</title>
     <style>
-        body, html { margin: 0; padding: 0; height: 100%; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #f0f2f5; }
-        #login-box { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; }
-        .card { background: white; padding: 30px; border-radius: 12px; box-shadow: 0 8px 24px rgba(0,0,0,0.15); width: 300px; text-align: center; }
-        img { max-width: 180px; margin-bottom: 20px; }
-        input { width: 100%; padding: 12px; margin: 15px 0; border: 1px solid #ccc; border-radius: 6px; box-sizing: border-box; }
-        button { width: 100%; padding: 12px; background: #004a99; color: white; border: none; border-radius: 6px; cursor: pointer; font-weight: bold; }
-        #report-frame { display: none; width: 100%; height: 100vh; border: none; }
-        .loading { display: none; margin-top: 10px; color: #666; font-size: 14px; }
+        /* Eliminamos margenes y scrolls para que se vea nativo */
+        body, html {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            width: 100%;
+            overflow: hidden;
+            background-color: #ffffff;
+        }
+
+        /* El iframe que contiene toda la lógica de validación y el BI */
+        iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
     </style>
 </head>
 <body>
 
-    <div id="login-box">
-        <div class="card">
-            <img src="https://oikos.com.co/wp-content/uploads/2021/03/Logo-Oikos-Horizontal-Color.png" alt="OIKOS">
-            <h3 style="color:#333;">Control de Acceso</h3>
-            <input type="email" id="email" placeholder="Introduce tu correo corporativo">
-            <button id="btn" onclick="verificar()">Entrar al Reporte</button>
-            <div id="loader" class="loading">Validando credenciales...</div>
-        </div>
-    </div>
+    <iframe 
+        src="https://script.google.com/a/macros/oikos.com.co/s/AKfycbwytBZRm3WY7LlNaYL1a6FhOnR_M5Lj-TGAPdNMXsB0jIfPSPaCFhqsXXYZigTceEmv/exec" 
+        allow="autoplay; camera; microphone; fullscreen" 
+        allowfullscreen="true">
+    </iframe>
 
-    <iframe id="report-frame" src=""></iframe>
-
-    <script>
-        function verificar() {
-            const email = document.getElementById('email').value;
-            const btn = document.getElementById('btn');
-            const loader = document.getElementById('loader');
-
-            if(!email) return alert("Por favor ingresa tu correo");
-
-            btn.style.display = 'none';
-            loader.style.display = 'block';
-
-            google.script.run.withSuccessHandler(function(res) {
-                if(res.status === 'success') {
-                    document.getElementById('login-box').style.display = 'none';
-                    const frame = document.getElementById('report-frame');
-                    frame.src = res.url;
-                    frame.style.display = 'block';
-                    console.log("Acceso concedido con token: " + res.token);
-                } else {
-                    alert(res.message);
-                    btn.style.display = 'block';
-                    loader.style.display = 'none';
-                }
-            }).validarAcceso(email);
-        }
-    </script>
 </body>
 </html>
