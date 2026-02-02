@@ -3,48 +3,32 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>OIKOS - Analytics Portal</title>
+    <title>Login - WELCOME!</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
     <style>
-        /* Estilos base de tu diseño */
         * { margin: 0; padding: 0; box-sizing: border-box; }
         :root { --primary-blue: #1a4fd1; --deep-blue: #0d2d8e; --accent-purple: #7c3aed; --light-gray: #f8f9fa; --text-gray: #6b7280; --white: #ffffff; }
         body { font-family: 'DM Sans', sans-serif; background: linear-gradient(135deg, #f0f4ff 0%, #e8ecf9 100%); min-height: 100vh; display: flex; align-items: center; justify-content: center; position: relative; overflow: hidden; }
-        
-        /* Decoración */
         .circle-decoration { position: absolute; border-radius: 50%; opacity: 0.15; z-index: 0; }
         .circle-top-left { width: 180px; height: 180px; background: linear-gradient(135deg, var(--primary-blue), var(--accent-purple)); top: -60px; left: -60px; animation: float 8s ease-in-out infinite; }
         .circle-bottom-right { width: 220px; height: 220px; background: linear-gradient(225deg, var(--accent-purple), #ec4899); bottom: -80px; right: -80px; animation: float 10s ease-in-out infinite reverse; }
         @keyframes float { 0%, 100% { transform: translateY(0) scale(1); } 50% { transform: translateY(-20px) scale(1.05); } }
-
-        /* Contenedor Principal */
         .container { display: flex; background: white; border-radius: 24px; box-shadow: 0 30px 80px rgba(0, 0, 0, 0.12); overflow: hidden; max-width: 1000px; width: 90%; position: relative; z-index: 1; }
-        
         .login-section { flex: 1; padding: 60px; display: flex; flex-direction: column; justify-content: center; }
-        .login-section h2 { font-family: 'Outfit', sans-serif; font-size: 26px; font-weight: 600; color: #1f2937; margin-bottom: 32px; }
-
+        .login-section h2 { font-family: 'Outfit', sans-serif; font-size: 24px; font-weight: 600; color: #1f2937; margin-bottom: 32px; }
         .input-group { margin-bottom: 20px; }
         .input-wrapper { display: flex; align-items: center; background: var(--light-gray); border-radius: 12px; border: 2px solid transparent; transition: all 0.3s; }
         .input-wrapper:focus-within { border-color: var(--primary-blue); background: white; box-shadow: 0 0 0 4px rgba(26, 79, 209, 0.1); }
         .input-icon { padding: 0 16px; color: var(--text-gray); }
-        .input-wrapper input { flex: 1; padding: 16px 16px 16px 0; border: none; background: transparent; outline: none; font-size: 14px; }
-
-        .login-button { width: 100%; padding: 16px; background: var(--primary-blue); color: white; border: none; border-radius: 12px; font-weight: 600; cursor: pointer; transition: all 0.3s; box-shadow: 0 4px 16px rgba(26, 79, 209, 0.3); }
+        .input-wrapper input { flex: 1; padding: 16px; border: none; background: transparent; outline: none; font-size: 14px; }
+        .login-button { width: 100%; padding: 16px; background: var(--primary-blue); color: white; border: none; border-radius: 12px; font-size: 15px; font-weight: 600; cursor: pointer; box-shadow: 0 4px 16px rgba(26, 79, 209, 0.3); transition: 0.3s; }
         .login-button:hover { background: var(--deep-blue); transform: translateY(-2px); }
-        .login-button:disabled { background: #9ca3af; cursor: not-allowed; }
-
-        .welcome-section { flex: 1; background: linear-gradient(135deg, var(--primary-blue) 0%, var(--deep-blue) 100%); padding: 60px; display: flex; flex-direction: column; align-items: center; justify-content: center; color: white; text-align: center; }
-        .welcome-section h1 { font-family: 'Outfit', sans-serif; font-size: 42px; margin-bottom: 16px; }
-        
-        /* Iframe de Power BI */
+        .welcome-section { flex: 1; background: linear-gradient(135deg, var(--primary-blue) 0%, var(--deep-blue) 100%); padding: 60px; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; color: white; }
         #bi-container { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 1000; background: white; }
         iframe { width: 100%; height: 100%; border: none; }
-
-        .status-msg { font-size: 13px; margin-top: 10px; text-align: center; display: none; }
-        .error { color: #ef4444; }
-        .success { color: #10b981; }
+        .loader-text { font-size: 12px; color: #6b7280; margin-top: 10px; display: none; text-align: center; }
     </style>
 </head>
 <body>
@@ -53,34 +37,34 @@
 
     <div class="container" id="login-ui">
         <div class="login-section">
-            <h2 id="main-title">Portal Intelligence</h2>
+            <h2 id="title">Portal Intelligence</h2>
             
-            <div id="step-email">
+            <div id="email-panel">
                 <div class="input-group">
                     <div class="input-wrapper">
                         <div class="input-icon">📩</div>
-                        <input type="email" id="emailInput" placeholder="Ingresa tu correo OIKOS">
+                        <input type="email" id="email" placeholder="Input your OIKOS Email">
                     </div>
                 </div>
-                <button class="login-button" id="btn-request" onclick="handleRequest()">SOLICITAR CÓDIGO</button>
+                <button class="login-button" id="btn1" onclick="requestToken()">SOLICITAR CÓDIGO</button>
             </div>
 
-            <div id="step-token" style="display: none;">
+            <div id="token-panel" style="display:none;">
                 <div class="input-group">
                     <div class="input-wrapper">
                         <div class="input-icon">🔑</div>
-                        <input type="text" id="tokenInput" placeholder="Código de 6 dígitos">
+                        <input type="text" id="token" placeholder="Input 6-digit code">
                     </div>
                 </div>
-                <button class="login-button" id="btn-verify" onclick="handleVerify()">VERIFICAR E INGRESAR</button>
+                <button class="login-button" id="btn2" onclick="verifyToken()">INGRESAR AL REPORTE</button>
             </div>
-
-            <div id="status-text" class="status-msg"></div>
+            <div id="loader" class="loader-text">Conectando con el servidor...</div>
         </div>
 
         <div class="welcome-section">
-            <h1>WELCOME!</h1>
-            <p>Portal corporativo de visualización de datos OIKOS S.A.S</p>
+            <div class="envelope-icon" style="font-size: 60px;">📊</div>
+            <h1 style="font-size: 42px;">WELCOME!</h1>
+            <p>OIKOS Data Intelligence System</p>
         </div>
     </div>
 
@@ -89,69 +73,46 @@
     </div>
 
     <script>
-        // TU URL DE APPS SCRIPT
-        const API_URL = "https://script.google.com/macros/s/AKfycbzNB-Y6S_6p3SNLeuZXlGSsgumN6jZgESordQ3PdWHmspjTfPAPVovmwn9Zfx-gtJauEg/exec";
-        
-        let userEmail = "";
+        // REEMPLAZA ESTA URL CON TU LINK DE IMPLEMENTACIÓN /EXEC
+        const API = "https://script.google.com/macros/s/AKfycbzNB-Y6S_6p3SNLeuZXlGSsgumN6jZgESordQ3PdWHmspjTfPAPVovmwn9Zfx-gtJauEg/exec";
+        let userMail = "";
 
-        function showStatus(msg, isError = true) {
-            const el = document.getElementById('status-text');
-            el.innerText = msg;
-            el.className = isError ? "status-msg error" : "status-msg success";
-            el.style.display = "block";
-        }
-
-        async function handleRequest() {
-            userEmail = document.getElementById('emailInput').value;
-            if(!userEmail) return showStatus("Ingresa un correo válido");
-
-            const btn = document.getElementById('btn-request');
-            btn.disabled = true;
-            btn.innerText = "Procesando...";
-
+        async function callAPI(params) {
+            document.getElementById('loader').style.display = "block";
+            const query = new URLSearchParams(params).toString();
             try {
-                const response = await fetch(`${API_URL}?correo=${userEmail}&action=solicitar`);
-                const data = await response.json();
-
-                if(data.status === 'sent') {
-                    document.getElementById('step-email').style.display = 'none';
-                    document.getElementById('step-token').style.display = 'block';
-                    document.getElementById('main-title').innerText = "Verificación";
-                    showStatus("Código enviado a tu correo", false);
-                } else {
-                    showStatus(data.message);
-                    btn.disabled = false;
-                    btn.innerText = "SOLICITAR CÓDIGO";
-                }
+                const response = await fetch(`${API}?${query}`);
+                return await response.json();
             } catch (e) {
-                showStatus("Error de conexión con el servidor");
-                btn.disabled = false;
+                return { status: 'error', message: 'Falla de red' };
+            } finally {
+                document.getElementById('loader').style.display = "none";
             }
         }
 
-        async function handleVerify() {
-            const token = document.getElementById('tokenInput').value;
-            const btn = document.getElementById('btn-verify');
+        async function requestToken() {
+            userMail = document.getElementById('email').value;
+            if(!userMail) return alert("Mete el correo");
             
-            btn.disabled = true;
-            btn.innerText = "Validando...";
+            const res = await callAPI({ action: 'solicitar', correo: userMail });
+            if(res.status === 'sent') {
+                document.getElementById('email-panel').style.display = 'none';
+                document.getElementById('token-panel').style.display = 'block';
+                document.getElementById('title').innerText = "Verificación";
+            } else {
+                alert(res.message);
+            }
+        }
 
-            try {
-                const response = await fetch(`${API_URL}?correo=${userEmail}&token=${token}&action=validar`);
-                const data = await response.json();
-
-                if(data.status === 'success') {
-                    document.getElementById('login-ui').style.display = 'none';
-                    document.getElementById('bi-container').style.display = 'block';
-                    document.getElementById('bi-frame').src = data.url;
-                } else {
-                    showStatus(data.message);
-                    btn.disabled = false;
-                    btn.innerText = "VERIFICAR E INGRESAR";
-                }
-            } catch (e) {
-                showStatus("Error al validar el token");
-                btn.disabled = false;
+        async function verifyToken() {
+            const tokenVal = document.getElementById('token').value;
+            const res = await callAPI({ action: 'validar', correo: userMail, token: tokenVal });
+            if(res.status === 'success') {
+                document.getElementById('login-ui').style.display = 'none';
+                document.getElementById('bi-container').style.display = 'block';
+                document.getElementById('bi-frame').src = res.url;
+            } else {
+                alert(res.message);
             }
         }
     </script>
