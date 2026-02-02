@@ -51,20 +51,38 @@
 
         .welcome-section { flex: 1; background: linear-gradient(150deg, var(--primary-blue) 0%, var(--deep-blue) 100%); padding: 60px; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; color: white; }
         .welcome-section h1 { font-family: 'Outfit', sans-serif; font-size: 44px; margin-bottom: 20px; }
-        
-        /* BI CONTAINER FULL SCREEN */
-        #bi-container { display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: 99999; background: white; }
+        .welcome-section p { font-size: 15px; opacity: 0.8; line-height: 1.6; max-width: 280px; }
 
-        /* ESCUDO INFERIOR BLINDADO */
-        #shield-bottom {
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            height: 45px; /* Cubre toda la barra de abajo de Power BI */
-            z-index: 100000;
-            background: rgba(255, 255, 255, 0.01);
-            cursor: pointer;
+        /* BI CONTAINER FULL SCREEN */
+        #bi-container { 
+            display: none; 
+            position: fixed; 
+            top: 0; left: 0; 
+            width: 100vw; height: 100vh; 
+            z-index: 99999; 
+            background: white; 
+        }
+
+        /* ESCUDOS SELECTIVOS: BLOQUEAN SOLO LOS BOTONES DE LA DERECHA Y ABAJO */
+        .shield { 
+            position: absolute; 
+            z-index: 100000; 
+            background: rgba(255, 255, 255, 0.01); 
+            cursor: pointer; 
+        }
+        /* Bloquea botón de "Abrir en ventana nueva" arriba a la derecha */
+        #shield-top-right { 
+            top: 0; 
+            right: 0; 
+            width: 180px; 
+            height: 55px; 
+        } 
+        /* Bloquea botón de "Compartir" y logo abajo a la derecha */
+        #shield-bottom-right { 
+            bottom: 0; 
+            right: 0; 
+            width: 250px; 
+            height: 45px; 
         }
 
         iframe { width: 100%; height: 100%; border: none; display: block; }
@@ -79,7 +97,7 @@
         <div class="login-section">
             <div class="brand-name">OIKOS</div>
             <h2>Acceso al Portal</h2>
-            <p class="instruction">Introduce tu correo corporativo y clave. Si ya ingresaste hoy, tu sesión estará activa por 6 horas.</p>
+            <p class="instruction">Introduce tu correo y clave. Si ya ingresaste hoy, tu sesión estará activa por 6 horas.</p>
             
             <div class="input-wrapper">
                 <input type="email" id="email" placeholder="ejemplo@oikos.com.co" spellcheck="false">
@@ -101,11 +119,13 @@
     </div>
 
     <div id="bi-container">
-        <div id="shield-bottom" onclick="securityReset()"></div>
+        <div id="shield-top-right" class="shield" onclick="securityReset()"></div>
+        <div id="shield-bottom-right" class="shield" onclick="securityReset()"></div>
         <iframe id="bi-frame" src=""></iframe>
     </div>
 
     <script>
+        // URL de tu Script de Google
         const API_URL = "https://script.google.com/macros/s/AKfycbzvsSjroWeRF9XZnWtdLLHGbj3luxszPObIwwPdMDTNCWdmjvDYWF2fnO9i0AfRdrvYbA/exec";
         const REPO_URL = "https://analistadatos-oikos.github.io/Repositorios_Visuales_BI/";
 
@@ -151,7 +171,7 @@
                 const res = await fetch(`${API_URL}?action=validar&correo=${encodeURIComponent(mail)}&token=${encodeURIComponent(tk)}`);
                 const data = await res.json();
                 if(data.status === 'success') {
-                    // Guardamos la sesión
+                    // Guardamos la sesión localmente
                     localStorage.setItem('oikos_auth_token', JSON.stringify({
                         time: new Date().getTime(),
                         url: data.url
