@@ -3,125 +3,138 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Portal de Inteligencia de Datos | OIKOS</title>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <title>Login - WELCOME!</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
     <style>
-        :root {
-            --primary: #004a99;
-            --dark: #0f172a;
-            --accent: #3b82f6;
-        }
-
-        body, html {
-            margin: 0;
-            padding: 0;
-            height: 100%;
-            width: 100%;
-            overflow: hidden;
-            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
-            font-family: 'Plus Jakarta Sans', sans-serif;
-        }
-
-        /* Contenedor principal para evitar saltos visuales */
-        .app-container {
-            position: relative;
-            width: 100%;
-            height: 100%;
-            display: flex;
-            flex-direction: column;
-        }
-
-        /* Barra superior elegante (Opcional, si quieres marca) */
-        header {
-            background: rgba(255, 255, 255, 0.8);
-            backdrop-filter: blur(10px);
-            height: 60px;
-            display: flex;
-            align-items: center;
-            padding: 0 30px;
-            border-bottom: 1px solid rgba(0,0,0,0.05);
-            z-index: 10;
-        }
-
-        header img {
-            height: 30px;
-        }
-
-        header span {
-            margin-left: 15px;
-            font-weight: 600;
-            color: var(--dark);
-            letter-spacing: -0.5px;
-        }
-
-        /* El Iframe que trae tu Apps Script */
-        iframe {
-            flex-grow: 1;
-            width: 100%;
-            height: 100%;
-            border: none;
-            /* Suaviza la aparición */
-            animation: fadeIn 1s ease-in-out;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
-
-        /* Overlay de carga pro */
-        #loader-overlay {
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: #ffffff;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            z-index: 9999;
-            transition: opacity 0.5s ease;
-        }
-
-        .spinner {
-            width: 40px;
-            height: 40px;
-            border: 3px solid #f3f3f3;
-            border-top: 3px solid var(--primary);
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-        }
-
-        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        /* Pego aquí todo tu CSS original para mantener el diseño exacto */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        :root { --primary-blue: #1a4fd1; --deep-blue: #0d2d8e; --accent-purple: #7c3aed; --light-gray: #f8f9fa; --text-gray: #6b7280; --border-gray: #e5e7eb; --white: #ffffff; }
+        body { font-family: 'DM Sans', sans-serif; background: linear-gradient(135deg, #f0f4ff 0%, #e8ecf9 100%); min-height: 100vh; display: flex; align-items: center; justify-content: center; position: relative; overflow: hidden; }
+        .circle-decoration { position: absolute; border-radius: 50%; opacity: 0.15; z-index: 0; }
+        .circle-top-left { width: 180px; height: 180px; background: linear-gradient(135deg, var(--primary-blue), var(--accent-purple)); top: -60px; left: -60px; animation: float 8s ease-in-out infinite; }
+        .circle-bottom-right { width: 220px; height: 220px; background: linear-gradient(225deg, var(--accent-purple), #ec4899); bottom: -80px; right: -80px; animation: float 10s ease-in-out infinite reverse; }
+        @keyframes float { 0%, 100% { transform: translateY(0) scale(1); } 50% { transform: translateY(-20px) scale(1.05); } }
+        .container { display: flex; background: white; border-radius: 24px; box-shadow: 0 30px 80px rgba(0, 0, 0, 0.12); overflow: hidden; max-width: 1000px; width: 90%; position: relative; z-index: 1; animation: slideUp 0.8s cubic-bezier(0.16, 1, 0.3, 1); }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+        .login-section { flex: 1; padding: 60px; display: flex; flex-direction: column; justify-content: center; animation: fadeIn 1s ease-out 0.3s both; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        .login-section h2 { font-family: 'Outfit', sans-serif; font-size: 24px; font-weight: 600; color: #1f2937; margin-bottom: 32px; }
+        .input-group { margin-bottom: 20px; position: relative; }
+        .input-wrapper { position: relative; display: flex; align-items: center; background: var(--light-gray); border-radius: 12px; border: 2px solid transparent; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
+        .input-wrapper:focus-within { border-color: var(--primary-blue); background: white; box-shadow: 0 0 0 4px rgba(26, 79, 209, 0.1); }
+        .input-icon { padding: 0 16px; color: var(--text-gray); display: flex; align-items: center; }
+        .input-wrapper input { flex: 1; padding: 16px 16px 16px 0; border: none; background: transparent; font-size: 14px; color: #1f2937; font-family: 'DM Sans', sans-serif; outline: none; }
+        .login-button { width: 100%; padding: 16px; background: var(--primary-blue); color: white; border: none; border-radius: 12px; font-size: 15px; font-weight: 600; cursor: pointer; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); box-shadow: 0 4px 16px rgba(26, 79, 209, 0.3); display: flex; align-items: center; justify-content: center; gap: 8px; }
+        .welcome-section { flex: 1; background: linear-gradient(135deg, var(--primary-blue) 0%, var(--deep-blue) 100%); padding: 60px; display: flex; flex-direction: column; align-items: center; justify-content: center; position: relative; overflow: hidden; }
+        .welcome-content { position: relative; z-index: 1; text-align: center; }
+        .envelope-icon { width: 120px; height: 120px; margin: 0 auto 40px; position: relative; animation: bounce 2s ease-in-out infinite; }
+        @keyframes bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-15px); } }
+        .welcome-section h1 { font-family: 'Outfit', sans-serif; font-size: 42px; font-weight: 700; color: white; margin-bottom: 16px; }
+        .welcome-section p { font-size: 16px; color: rgba(255, 255, 255, 0.9); margin-bottom: 40px; line-height: 1.6; }
+        
+        /* Estilos adicionales para el Iframe de Power BI */
+        #bi-container { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 1000; background: white; }
+        iframe { width: 100%; height: 100%; border: none; }
+        
+        .spinner { animation: rotate 2s linear infinite; width: 20px; height: 20px; }
+        @keyframes rotate { 100% { transform: rotate(360deg); } }
     </style>
 </head>
 <body>
+    <div class="circle-decoration circle-top-left"></div>
+    <div class="circle-decoration circle-bottom-right"></div>
 
-    <div id="loader-overlay">
-        <div class="spinner"></div>
-        <p style="margin-top: 20px; color: #64748b; font-weight: 500;">Iniciando sistema seguro...</p>
+    <div class="container" id="main-ui">
+        <div class="login-section">
+            <h2 id="form-title">Login please</h2>
+            
+            <form id="loginForm">
+                <div id="email-step">
+                    <div class="input-group">
+                        <div class="input-wrapper">
+                            <div class="input-icon">
+                                <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="20"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/></svg>
+                            </div>
+                            <input type="email" id="userEmail" placeholder="Input your Email" required>
+                        </div>
+                    </div>
+                    <button type="button" onclick="sendToken()" class="login-button" id="btn-token">SOLICITAR TOKEN</button>
+                </div>
+
+                <div id="token-step" style="display: none;">
+                    <div class="input-group">
+                        <div class="input-wrapper">
+                            <div class="input-icon">
+                                <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="20"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>
+                            </div>
+                            <input type="text" id="userToken" placeholder="Input 6-digit code">
+                        </div>
+                    </div>
+                    <button type="button" onclick="verifyAccess()" class="login-button" id="btn-verify">ACCEDER AL REPORTE</button>
+                </div>
+            </form>
+        </div>
+
+        <div class="welcome-section">
+            <div class="welcome-content">
+                <div class="envelope-icon">
+                    <svg viewBox="0 0 120 120" fill="none"><rect x="15" y="30" width="90" height="60" rx="6" fill="white" opacity="0.95"/><path d="M15 35 L60 65 L105 35" stroke="#1a4fd1" stroke-width="3" fill="none"/></svg>
+                </div>
+                <h1>OIKOS BI</h1>
+                <p>Advanced Analytics & Data Intelligence Portal</p>
+            </div>
+        </div>
     </div>
 
-    <div class="app-container">
-        <header>
-            <img src="https://oikos.com.co/wp-content/uploads/2021/03/Logo-Oikos-Horizontal-Color.png" alt="OIKOS">
-            <span>| Analytics Portal</span>
-        </header>
-
-        <iframe 
-            id="mainFrame"
-            src="https://script.google.com/a/macros/oikos.com.co/s/AKfycbxTXiBKD4Z0eCK8kqRUcwYHhwB4Rw3ypZEEH2Zm09NjkpYxukhfotmhkGFf5rpWoiDsZw/exec" 
-            allowfullscreen="true"
-            onload="hideLoader()">
-        </iframe>
+    <div id="bi-container">
+        <iframe id="bi-frame" src=""></iframe>
     </div>
 
     <script>
-        function hideLoader() {
-            const loader = document.getElementById('loader-overlay');
-            loader.style.opacity = '0';
-            setTimeout(() => {
-                loader.style.display = 'none';
-            }, 500);
+        const APPS_SCRIPT_URL = "https://script.google.com/a/macros/oikos.com.co/s/AKfycbxTXiBKD4Z0eCK8kqRUcwYHhwB4Rw3ypZEEH2Zm09NjkpYxukhfotmhkGFf5rpWoiDsZw/exec";
+
+        async function sendToken() {
+            const email = document.getElementById('userEmail').value;
+            if(!email) return alert("Ingresa tu correo");
+            
+            const btn = document.getElementById('btn-token');
+            btn.innerHTML = "Enviando...";
+            
+            // Llamada al script de forma asíncrona para no salir de la página
+            fetch(`${APPS_SCRIPT_URL}?correo=${email}&action=solicitar`)
+            .then(res => res.json())
+            .then(data => {
+                if(data.status === 'sent') {
+                    document.getElementById('email-step').style.display = 'none';
+                    document.getElementById('token-step').style.display = 'block';
+                    document.getElementById('form-title').innerText = "Verify Token";
+                } else {
+                    alert(data.message);
+                    btn.innerHTML = "SOLICITAR TOKEN";
+                }
+            });
+        }
+
+        async function verifyAccess() {
+            const email = document.getElementById('userEmail').value;
+            const token = document.getElementById('userToken').value;
+            const btn = document.getElementById('btn-verify');
+            btn.innerHTML = "Verificando...";
+
+            fetch(`${APPS_SCRIPT_URL}?correo=${email}&token=${token}&action=validar`)
+            .then(res => res.json())
+            .then(data => {
+                if(data.status === 'success') {
+                    document.getElementById('main-ui').style.display = 'none';
+                    document.getElementById('bi-container').style.display = 'block';
+                    document.getElementById('bi-frame').src = data.url;
+                } else {
+                    alert(data.message);
+                    btn.innerHTML = "ACCEDER AL REPORTE";
+                }
+            });
         }
     </script>
 </body>
