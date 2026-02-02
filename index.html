@@ -19,7 +19,7 @@
             position: relative; overflow: hidden; 
         }
 
-        /* Círculos decorativos Pro */
+        /* Animación de círculos Pro */
         .circle-decoration { position: absolute; border-radius: 50%; opacity: 0.15; z-index: 0; filter: blur(50px); }
         .c1 { width: 300px; height: 300px; background: var(--primary-blue); top: -100px; left: -100px; animation: float 10s infinite; }
         .c2 { width: 400px; height: 400px; background: var(--accent-cyan); bottom: -150px; right: -150px; animation: float 12s infinite reverse; }
@@ -41,7 +41,6 @@
         .instruction { font-size: 13px; color: var(--text-gray); margin-bottom: 25px; line-height: 1.5; }
 
         .input-wrapper { display: flex; align-items: center; background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 14px; transition: 0.3s; margin-bottom: 15px; }
-        .input-wrapper:focus-within { border-color: var(--primary-blue); background: white; }
         .input-wrapper input { flex: 1; padding: 18px; border: none; background: transparent; outline: none; font-size: 15px; color: #1e293b; }
 
         .btn-request { width: 100%; padding: 12px; background: white; color: var(--primary-blue); border: 2px solid var(--primary-blue); border-radius: 12px; font-weight: 700; cursor: pointer; margin-bottom: 15px; font-size: 12px; transition: 0.3s; }
@@ -52,28 +51,21 @@
 
         .welcome-section { flex: 1; background: linear-gradient(150deg, var(--primary-blue) 0%, var(--deep-blue) 100%); padding: 60px; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; color: white; }
         .welcome-section h1 { font-family: 'Outfit', sans-serif; font-size: 44px; margin-bottom: 20px; }
-        .welcome-section p { font-size: 15px; opacity: 0.8; line-height: 1.6; max-width: 280px; }
+        
+        /* BI CONTAINER FULL SCREEN */
+        #bi-container { display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: 99999; background: white; }
 
-        /* REPORTE BI FULL SCREEN */
-        #bi-container { 
-            display: none; 
-            position: fixed; 
-            top: 0; left: 0; 
-            width: 100vw; height: 100vh; 
-            z-index: 99999; 
-            background: white; 
-        }
-
-        /* ESCUDOS DE SEGURIDAD TOTAL (BLOQUEO DE BARRAS) */
-        .security-glass {
+        /* ESCUDO INFERIOR BLINDADO */
+        #shield-bottom {
             position: absolute;
-            z-index: 100000;
-            background: rgba(255, 255, 255, 0.01); /* Invisible pero bloquea clics */
+            bottom: 0;
+            left: 0;
             width: 100%;
-            cursor: default;
+            height: 45px; /* Cubre toda la barra de abajo de Power BI */
+            z-index: 100000;
+            background: rgba(255, 255, 255, 0.01);
+            cursor: pointer;
         }
-        #shield-top { top: 0; height: 55px; cursor: pointer; }
-        #shield-bottom { bottom: 0; height: 45px; cursor: pointer; }
 
         iframe { width: 100%; height: 100%; border: none; display: block; }
         #status-msg { margin-top: 15px; font-size: 12px; text-align: center; font-weight: 600; }
@@ -86,8 +78,8 @@
     <div class="container" id="login-ui">
         <div class="login-section">
             <div class="brand-name">OIKOS</div>
-            <h2 id="step-title">Portal de Inteligencia</h2>
-            <p class="instruction" id="step-desc">Introduce tu correo corporativo y clave alfanumérica. Las claves tienen vigencia de 6 horas.</p>
+            <h2>Acceso al Portal</h2>
+            <p class="instruction">Introduce tu correo corporativo y clave. Si ya ingresaste hoy, tu sesión estará activa por 6 horas.</p>
             
             <div class="input-wrapper">
                 <input type="email" id="email" placeholder="ejemplo@oikos.com.co" spellcheck="false">
@@ -96,103 +88,80 @@
             <button class="btn-request" onclick="requestToken()">VALIDAR USUARIO</button>
 
             <div class="input-wrapper">
-                <input type="text" id="token" placeholder="Introduce tu Clave" maxlength="6">
+                <input type="text" id="token" placeholder="Clave Alfanumérica" maxlength="6">
             </div>
             
             <button class="main-button" onclick="verifyToken()">INGRESAR AL SISTEMA</button>
             <div id="status-msg"></div>
         </div>
-
         <div class="welcome-section">
             <h1>Analytics</h1>
-            <p>Acceso restringido para el análisis financiero y operativo del Grupo Empresarial OIKOS.</p>
+            <p>Grupo Empresarial OIKOS S.A.S</p>
         </div>
     </div>
 
     <div id="bi-container">
-        <div id="shield-top" class="security-glass" onclick="securityTrigger()"></div>
-        <div id="shield-bottom" class="security-glass" onclick="securityTrigger()"></div>
-        
+        <div id="shield-bottom" onclick="securityReset()"></div>
         <iframe id="bi-frame" src=""></iframe>
     </div>
 
     <script>
-        // URL DE TU SCRIPT DE GOOGLE
         const API_URL = "https://script.google.com/macros/s/AKfycbzmSfsryLTFAdJn41-KiPcnNXVrWRwwrYnmNhCLGFKd4qc2FRor3HSav2qisz6NheUMKQ/exec";
-        const HOME_URL = "https://analistadatos-oikos.github.io/Repositorios_Visuales_BI/";
+        const REPO_URL = "https://analistadatos-oikos.github.io/Repositorios_Visuales_BI/";
 
-        // Lógica de Auto-Login (6 Horas)
+        // 1. Lógica de Sesión Recordada (6 Horas)
         window.onload = () => {
-            const savedSession = JSON.parse(localStorage.getItem('oikos_auth_session'));
+            const savedSession = JSON.parse(localStorage.getItem('oikos_auth_token'));
             if(savedSession) {
                 const now = new Date().getTime();
-                if(now - savedSession.timestamp < 21600000) { // 6 horas en milisegundos
-                    launchReport(savedSession.reportUrl);
+                if(now - savedSession.time < 21600000) { // 6 horas
+                    loadReport(savedSession.url);
                 }
             }
         };
 
-        function securityTrigger() {
-            alert("Acción bloqueada por políticas de seguridad corporativa.");
-            window.location.href = HOME_URL;
+        function securityReset() {
+            alert("Acción no permitida por seguridad corporativa.");
+            window.location.href = REPO_URL;
         }
 
-        function setStatus(msg, color = "#64748b") {
+        function setStatus(m, c = "#64748b") {
             const el = document.getElementById('status-msg');
-            el.innerText = msg;
-            el.style.color = color;
+            el.innerText = m; el.style.color = c;
         }
 
         async function requestToken() {
             const mail = document.getElementById('email').value;
-            if(!mail.includes('@')) return setStatus("Ingresa un correo válido", "#ef4444");
-            
+            if(!mail.includes('@')) return setStatus("Correo no válido", "#ef4444");
             setStatus("Enviando clave...", "#004a99");
-
             try {
-                const response = await fetch(`${API_URL}?action=solicitar&correo=${encodeURIComponent(mail)}`);
-                const data = await response.json();
-                
-                if(data.status === 'sent') {
-                    setStatus("Clave enviada. Revisa tu bandeja de entrada.", "#10b981");
-                } else {
-                    setStatus(data.message, "#ef4444");
-                }
-            } catch(e) {
-                setStatus("Falla de conexión con el servidor", "#ef4444");
-            }
+                const res = await fetch(`${API_URL}?action=solicitar&correo=${encodeURIComponent(mail)}`);
+                const data = await res.json();
+                if(data.status === 'sent') setStatus("¡Clave enviada! Válida por 6h.", "#10b981");
+                else setStatus(data.message, "#ef4444");
+            } catch(e) { setStatus("Error de red", "#ef4444"); }
         }
 
         async function verifyToken() {
             const mail = document.getElementById('email').value;
             const tk = document.getElementById('token').value;
-            
-            if(!mail || !tk) return setStatus("Completa los dos campos", "#ef4444");
-
+            if(!mail || !tk) return setStatus("Completa los datos", "#ef4444");
             setStatus("Verificando acceso...", "#004a99");
-
             try {
-                const response = await fetch(`${API_URL}?action=validar&correo=${encodeURIComponent(mail)}&token=${encodeURIComponent(tk)}`);
-                const data = await response.json();
-
+                const res = await fetch(`${API_URL}?action=validar&correo=${encodeURIComponent(mail)}&token=${encodeURIComponent(tk)}`);
+                const data = await res.json();
                 if(data.status === 'success') {
-                    // Guardar sesión local
-                    const sessionData = {
-                        timestamp: new Date().getTime(),
-                        reportUrl: data.url
-                    };
-                    localStorage.setItem('oikos_auth_session', JSON.stringify(sessionData));
-                    
-                    launchReport(data.url);
-                } else {
-                    setStatus(data.message, "#ef4444");
-                }
-            } catch(e) {
-                setStatus("Error en el proceso de validación", "#ef4444");
-            }
+                    // Guardamos la sesión
+                    localStorage.setItem('oikos_auth_token', JSON.stringify({
+                        time: new Date().getTime(),
+                        url: data.url
+                    }));
+                    loadReport(data.url);
+                } else setStatus(data.message, "#ef4444");
+            } catch(e) { setStatus("Falla de validación", "#ef4444"); }
         }
 
-        function launchReport(url) {
+        function loadReport(url) {
             document.getElementById('login-ui').style.display = 'none';
             document.getElementById('bi-container').style.display = 'block';
             document.getElementById('bi-frame').src = url;
