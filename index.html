@@ -3,101 +3,90 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>OIKOS Analytics Portal</title>
+    <title>Login - WELCOME!</title>
     <link rel="icon" type="image/png" href="https://oikos.com.co/wp-content/uploads/2021/01/cropped-Favicon-Oikos-32x32.png">
     <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@600;800&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        :root { --primary-blue: #004a99; --deep-blue: #003366; --accent-purple: #7c3aed; --text-gray: #64748b; }
-        
-        body, html { 
-            font-family: 'DM Sans', sans-serif; 
-            background: linear-gradient(135deg, #f0f4ff 0%, #e8ecf9 100%); 
-            height: 100%; width: 100%; display: flex; align-items: center; justify-content: center; 
-            position: relative; overflow: hidden; 
-        }
+        :root { --primary-blue: #1a4fd1; --deep-blue: #0d2d8e; --accent-cyan: #00d2ff; --light-gray: #f8f9fa; --text-gray: #6b7280; --white: #ffffff; }
 
-        .circle-decoration { position: absolute; border-radius: 50%; opacity: 0.12; z-index: 0; filter: blur(50px); }
-        .c1 { width: 300px; height: 300px; background: var(--primary-blue); top: -100px; left: -100px; animation: float 10s infinite; }
-        .c2 { width: 400px; height: 400px; background: var(--accent-purple); bottom: -150px; right: -150px; animation: float 12s infinite reverse; }
-        @keyframes float { 0%, 100% { transform: translate(0,0); } 50% { transform: translate(20px, 20px); } }
+        body { font-family: 'DM Sans', sans-serif; background: linear-gradient(135deg, #f0f4ff 0%, #e8ecf9 100%); min-height: 100vh; display: flex; align-items: center; justify-content: center; position: relative; overflow: hidden; }
 
-        .container { 
-            display: flex; background: white; border-radius: 28px; 
-            box-shadow: 0 40px 100px rgba(0, 0, 0, 0.1); 
-            max-width: 1000px; width: 92%; min-height: 600px;
-            position: relative; z-index: 1; overflow: hidden;
-            animation: slideUp 0.8s ease-out;
-        }
+        /* Decoracion Pro con el nuevo color Cian */
+        .circle-decoration { position: absolute; border-radius: 50%; opacity: 0.15; z-index: 0; }
+        .circle-top-left { width: 180px; height: 180px; background: linear-gradient(135deg, var(--primary-blue), var(--accent-cyan)); top: -60px; left: -60px; animation: float 8s ease-in-out infinite; }
+        .circle-bottom-right { width: 220px; height: 220px; background: linear-gradient(225deg, var(--accent-cyan), #00a8ff); bottom: -80px; right: -80px; animation: float 10s ease-in-out infinite reverse; }
+        @keyframes float { 0%, 100% { transform: translateY(0) scale(1); } 50% { transform: translateY(-20px) scale(1.05); } }
 
+        .container { display: flex; background: white; border-radius: 24px; box-shadow: 0 30px 80px rgba(0, 0, 0, 0.12); overflow: hidden; max-width: 1000px; width: 90%; position: relative; z-index: 1; animation: slideUp 0.8s cubic-bezier(0.16, 1, 0.3, 1); flex-wrap: wrap; }
         @keyframes slideUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
 
-        .login-section { flex: 1.2; padding: 60px; display: flex; flex-direction: column; justify-content: center; }
-        .brand-name { font-family: 'Outfit', sans-serif; font-size: 32px; font-weight: 800; color: var(--primary-blue); margin-bottom: 40px; letter-spacing: -1px; }
-        h2 { font-family: 'Outfit', sans-serif; font-size: 26px; color: #1e293b; margin-bottom: 12px; }
-        .instruction { font-size: 14px; color: var(--text-gray); margin-bottom: 30px; line-height: 1.6; }
+        .login-section { flex: 1; padding: 60px; display: flex; flex-direction: column; justify-content: center; min-width: 320px; }
+        .brand-name { font-family: 'Outfit', sans-serif; font-size: 32px; font-weight: 800; color: var(--primary-blue); margin-bottom: 30px; }
+        .login-section h2 { font-family: 'Outfit', sans-serif; font-size: 24px; font-weight: 600; color: #1f2937; margin-bottom: 8px; }
+        .step-desc { font-size: 14px; color: var(--text-gray); margin-bottom: 32px; line-height: 1.4; }
 
-        .input-wrapper { display: flex; align-items: center; background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 14px; transition: 0.3s; margin-bottom: 20px; }
+        .input-group { margin-bottom: 20px; position: relative; }
+        .input-wrapper { position: relative; display: flex; align-items: center; background: var(--light-gray); border-radius: 12px; border: 2px solid transparent; transition: 0.3s; }
         .input-wrapper:focus-within { border-color: var(--primary-blue); background: white; }
-        .input-wrapper input { flex: 1; padding: 18px; border: none; background: transparent; outline: none; font-size: 15px; color: #1e293b; }
+        .input-icon { padding: 0 16px; color: var(--text-gray); display: flex; align-items: center; }
+        .input-wrapper input { flex: 1; padding: 16px 16px 16px 0; border: none; background: transparent; font-size: 14px; color: #1f2937; outline: none; }
 
-        .main-button { width: 100%; padding: 18px; background: var(--primary-blue); color: white; border: none; border-radius: 14px; font-weight: 700; font-family: 'Outfit', sans-serif; cursor: pointer; transition: 0.3s; box-shadow: 0 10px 25px rgba(0, 74, 153, 0.2); }
-        .main-button:hover { background: var(--deep-blue); transform: translateY(-2px); }
+        .login-button { width: 100%; padding: 16px; background: var(--primary-blue); color: white; border: none; border-radius: 12px; font-size: 15px; font-weight: 600; font-family: 'Outfit', sans-serif; cursor: pointer; transition: 0.3s; box-shadow: 0 4px 16px rgba(26, 79, 209, 0.3); }
+        .login-button:hover { background: var(--deep-blue); transform: translateY(-2px); }
 
-        .welcome-section { flex: 1; background: linear-gradient(150deg, var(--primary-blue) 0%, var(--deep-blue) 100%); padding: 60px; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; color: white; }
-        .welcome-section h1 { font-family: 'Outfit', sans-serif; font-size: 44px; margin-bottom: 20px; }
-        .welcome-section p { font-size: 15px; opacity: 0.8; line-height: 1.6; max-width: 280px; }
+        .welcome-section { flex: 1; background: linear-gradient(135deg, var(--primary-blue) 0%, var(--deep-blue) 100%); padding: 60px; display: flex; flex-direction: column; align-items: center; justify-content: center; position: relative; overflow: hidden; color: white; text-align: center; min-width: 320px; }
+        .welcome-content { position: relative; z-index: 1; }
+        .welcome-section h1 { font-family: 'Outfit', sans-serif; font-size: 42px; font-weight: 700; margin-bottom: 16px; }
+        .welcome-section p { font-size: 16px; opacity: 0.9; line-height: 1.6; }
 
-        /* FIX: EL BI AHORA OCUPA TODO EL ANCHO Y ALTO */
-        #bi-container { 
-            display: none; 
-            position: fixed; 
-            top: 0; 
-            left: 0; 
-            width: 100vw; 
-            height: 100vh; 
-            z-index: 9999; 
-            background: white; 
-        }
-        iframe { 
-            width: 100%; 
-            height: 100%; 
-            border: none; 
-        }
+        /* REPORTE ADAPTATIVO FULL SCREEN */
+        #bi-container { display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: 9999; background: white; }
+        iframe { width: 100%; height: 100%; border: none; }
 
-        #status-msg { margin-top: 15px; font-size: 13px; text-align: center; font-weight: 500; }
+        #status-msg { font-size: 13px; text-align: center; margin-top: 15px; font-weight: 500; }
     </style>
 </head>
 <body>
-    <div class="circle c1"></div>
-    <div class="circle c2"></div>
+    <div class="circle-decoration circle-top-left"></div>
+    <div class="circle-decoration circle-bottom-right"></div>
 
     <div class="container" id="login-ui">
         <div class="login-section">
             <div class="brand-name">OIKOS</div>
-            <h2 id="step-title">Bienvenido al Portal</h2>
-            <p class="instruction" id="step-desc">Ingresa tu correo corporativo. Validaremos tu identidad enviando un código de 6 dígitos a tu bandeja de entrada.</p>
+            <h2 id="title">Portal Intelligence</h2>
+            <p class="step-desc" id="desc">Ingresa tu correo corporativo. El código enviado tendrá una vigencia de 6 horas.</p>
             
-            <div id="panel-email">
-                <div class="input-wrapper">
-                    <input type="email" id="email" placeholder="ejemplo@oikos.com.co" spellcheck="false">
+            <div id="step1">
+                <div class="input-group">
+                    <div class="input-wrapper">
+                        <div class="input-icon">📩</div>
+                        <input type="email" id="email" placeholder="usuario@oikos.com.co">
+                    </div>
                 </div>
-                <button class="main-button" id="btn1" onclick="requestToken()">SOLICITAR CÓDIGO</button>
+                <button class="login-button" id="btn1" onclick="handleToken()">SOLICITAR CÓDIGO</button>
             </div>
 
-            <div id="panel-token" style="display:none;">
-                <div class="input-wrapper">
-                    <input type="text" id="token" placeholder="Ingresa el código de 6 dígitos" maxlength="6">
+            <div id="step2" style="display:none;">
+                <div class="input-group">
+                    <div class="input-wrapper">
+                        <div class="input-icon">🔑</div>
+                        <input type="text" id="token" placeholder="Ingresa el código de 6 dígitos">
+                    </div>
                 </div>
-                <button class="main-button" id="btn2" onclick="verifyToken()">INGRESAR AL SISTEMA</button>
+                <button class="login-button" id="btn2" onclick="handleVerify()">VERIFICAR E INGRESAR</button>
             </div>
-            <div id="status-msg"></div>
+            <p id="status-msg"></p>
         </div>
 
         <div class="welcome-section">
-            <h1>Analytics</h1>
-            <p>Acceso restringido para el análisis financiero y operativo del Grupo Empresarial OIKOS.</p>
+            <div class="welcome-content">
+                <div style="font-size: 60px; margin-bottom: 20px;">📊</div>
+                <h1>WELCOME!</h1>
+                <p>Portal avanzado de inteligencia de datos. Acceso exclusivo OIKOS S.A.S</p>
+            </div>
         </div>
     </div>
 
@@ -106,67 +95,49 @@
     </div>
 
     <script>
-        // RECUERDA VERIFICAR QUE ESTA URL SEA LA TUYA DE APPS SCRIPT
-        const API_URL = "https://script.google.com/macros/s/AKfycbxbFX-nh7guiy483V9HEivoWaHDmm8iU7llYr4SdMh1bZvlfX-Nksza3sNIsS-dXWuSjw/exec";
+        const API = "https://script.google.com/macros/s/AKfycbzNB-Y6S_6p3SNLeuZXlGSsgumN6jZgESordQ3PdWHmspjTfPAPVovmwn9Zfx-gtJauEg/exec";
         let userMail = "";
 
-        function setMsg(m, c = "#64748b") {
+        function setStatus(msg, color = "#6b7280") {
             const el = document.getElementById('status-msg');
-            el.innerText = m;
-            el.style.color = c;
+            el.innerText = msg;
+            el.style.color = color;
         }
 
-        async function requestToken() {
+        async function handleToken() {
             userMail = document.getElementById('email').value;
-            if(!userMail.includes('@')) return setMsg("Correo no válido", "#ef4444");
-            
-            document.getElementById('btn1').disabled = true;
-            setMsg("Validando usuario...", "#004a99");
+            if(!userMail) return setStatus("Escribe tu correo", "#ef4444");
+            const btn = document.getElementById('btn1');
+            btn.disabled = true;
+            setStatus("Validando usuario...", "#1a4fd1");
 
             try {
-                const res = await fetch(`${API_URL}?action=solicitar&correo=${userMail}`);
+                const res = await fetch(`${API}?action=solicitar&correo=${userMail}`);
                 const data = await res.json();
-                
                 if(data.status === 'sent') {
-                    document.getElementById('panel-email').style.display = 'none';
-                    document.getElementById('panel-token').style.display = 'block';
-                    document.getElementById('step-title').innerText = "Verificación";
-                    document.getElementById('step-desc').innerText = "Revisa tu correo. Digita el código de seguridad recibido para continuar.";
-                    setMsg("Código enviado", "#10b981");
-                } else {
-                    setMsg(data.message, "#ef4444");
-                    document.getElementById('btn1').disabled = false;
-                }
-            } catch(e) {
-                setMsg("Error de conexión", "#ef4444");
-                document.getElementById('btn1').disabled = false;
-            }
+                    document.getElementById('step1').style.display = 'none';
+                    document.getElementById('step2').style.display = 'block';
+                    document.getElementById('title').innerText = "Verificación";
+                    setStatus("Código enviado. Válido por 6h.", "#10b981");
+                } else { setStatus(data.message, "#ef4444"); btn.disabled = false; }
+            } catch (e) { setStatus("Error de red", "#ef4444"); btn.disabled = false; }
         }
 
-        async function verifyToken() {
-            const tk = document.getElementById('token').value;
-            document.getElementById('btn2').disabled = true;
-            setMsg("Verificando acceso...", "#004a99");
+        async function handleVerify() {
+            const tokenVal = document.getElementById('token').value;
+            const btn = document.getElementById('btn2');
+            btn.disabled = true;
+            setStatus("Verificando acceso...", "#1a4fd1");
 
             try {
-                const res = await fetch(`${API_URL}?action=validar&correo=${userMail}&token=${tk}`);
+                const res = await fetch(`${API}?action=validar&correo=${userMail}&token=${tokenVal}`);
                 const data = await res.json();
-
                 if(data.status === 'success') {
-                    // AQUÍ ESTÁ EL TRUCO: OCULTAMOS TODO Y MOSTRAMOS EL IFRAME EN TODA LA PANTALLA
                     document.getElementById('login-ui').style.display = 'none';
-                    document.body.style.overflow = 'hidden';
-                    const container = document.getElementById('bi-container');
-                    container.style.display = 'block';
+                    document.getElementById('bi-container').style.display = 'block';
                     document.getElementById('bi-frame').src = data.url;
-                } else {
-                    setMsg(data.message, "#ef4444");
-                    document.getElementById('btn2').disabled = false;
-                }
-            } catch(e) {
-                setMsg("Error en validación", "#ef4444");
-                document.getElementById('btn2').disabled = false;
-            }
+                } else { setStatus(data.message, "#ef4444"); btn.disabled = false; }
+            } catch (e) { setStatus("Falla de servidor", "#ef4444"); btn.disabled = false; }
         }
     </script>
 </body>
