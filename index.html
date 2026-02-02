@@ -37,7 +37,7 @@
         h2 { font-family: 'Outfit', sans-serif; font-size: 24px; color: #1e293b; margin-bottom: 8px; }
         .instruction { font-size: 13px; color: var(--text-gray); margin-bottom: 25px; line-height: 1.5; }
 
-        .input-wrapper { display: flex; align-items: center; background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 12px; transition: 0.3s; margin-bottom: 12px; }
+        .input-wrapper { display: flex; align-items: center; background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 14px; transition: 0.3s; margin-bottom: 12px; }
         .input-wrapper:focus-within { border-color: var(--primary-blue); background: white; }
         .input-wrapper input { flex: 1; padding: 18px; border: none; background: transparent; outline: none; font-size: 14px; color: #1e293b; }
 
@@ -45,29 +45,33 @@
         .btn-request:hover { background: #f0f7ff; }
 
         .main-button { width: 100%; padding: 18px; background: var(--primary-blue); color: white; border: none; border-radius: 14px; font-weight: 700; font-family: 'Outfit', sans-serif; cursor: pointer; transition: 0.3s; box-shadow: 0 10px 25px rgba(0, 74, 153, 0.2); }
-        .main-button:hover { background: var(--deep-blue); transform: translateY(-2px); }
 
         .welcome-section { flex: 1; background: linear-gradient(150deg, var(--primary-blue) 0%, var(--deep-blue) 100%); padding: 60px; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; color: white; }
         .welcome-section h1 { font-family: 'Outfit', sans-serif; font-size: 44px; margin-bottom: 20px; }
         
-        /* FIX DEFINITIVO: ESTE CONTENEDOR MATA LA MINIATURA */
+        /* BI CONTAINER FULL SCREEN */
         #bi-container { 
             display: none; 
             position: fixed; 
-            top: 0; 
-            left: 0; 
-            width: 100vw; 
-            height: 100vh; 
+            top: 0; left: 0; 
+            width: 100vw; height: 100vh; 
             z-index: 99999; 
             background: white; 
         }
-        iframe { 
-            width: 100%; 
-            height: 100%; 
-            border: none;
-            display: block;
+
+        /* ESCUDO DE SEGURIDAD: Bloquea la esquina superior derecha (Donde está el botón de "Abrir en ventana nueva") */
+        #bi-shield {
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 300px; /* Tamaño suficiente para cubrir los botones de Power BI */
+            height: 50px;
+            z-index: 100000; /* Por encima del Iframe */
+            background: transparent; /* Invisible pero bloquea clics */
+            cursor: default;
         }
 
+        iframe { width: 100%; height: 100%; border: none; display: block; }
         #status-msg { margin-top: 10px; font-size: 12px; text-align: center; font-weight: 600; }
     </style>
 </head>
@@ -79,7 +83,7 @@
         <div class="login-section">
             <div class="brand-name">OIKOS</div>
             <h2>Acceso al Portal</h2>
-            <p class="instruction">Introduce tu correo y clave. Las claves alfanuméricas tienen vigencia de 6 horas.</p>
+            <p class="instruction">Introduce tu correo corporativo y clave. Las claves tienen vigencia de 6 horas.</p>
             
             <div class="input-wrapper">
                 <input type="email" id="email" placeholder="Correo Corporativo" autocomplete="off">
@@ -102,11 +106,11 @@
     </div>
 
     <div id="bi-container">
-        <iframe id="bi-frame" src=""></iframe>
+        <div id="bi-shield"></div> <iframe id="bi-frame" src=""></iframe>
     </div>
 
     <script>
-        const API_URL = "https://script.google.com/macros/s/AKfycbzWzfxbnenjr86TnLUkh0lPnTvpMHL8Rp2IZHT6CVDHLpA6qgMgsBg3-oS6J82TW5bT5A/exec";
+        const API_URL = "https://script.google.com/macros/s/AKfycbzNB-Y6S_6p3SNLeuZXlGSsgumN6jZgESordQ3PdWHmspjTfPAPVovmwn9Zfx-gtJauEg/exec";
         
         function setMsg(m, c = "#64748b") {
             const el = document.getElementById('status-msg');
@@ -116,11 +120,11 @@
         async function requestToken() {
             const mail = document.getElementById('email').value;
             if(!mail.includes('@')) return setMsg("Ingresa un correo corporativo", "#ef4444");
-            setMsg("Validando usuario...", "#004a99");
+            setMsg("Enviando clave...", "#004a99");
             try {
                 const res = await fetch(`${API_URL}?action=solicitar&correo=${encodeURIComponent(mail)}`);
                 const data = await res.json();
-                if(data.status === 'sent') setMsg("¡Clave enviada! Revisa tu bandeja.", "#10b981");
+                if(data.status === 'sent') setMsg("¡Clave enviada! Revisa tu correo.", "#10b981");
                 else setMsg(data.message, "#ef4444");
             } catch(e) { setMsg("Error de conexión", "#ef4444"); }
         }
@@ -134,9 +138,7 @@
                 const res = await fetch(`${API_URL}?action=validar&correo=${encodeURIComponent(mail)}&token=${encodeURIComponent(tk)}`);
                 const data = await res.json();
                 if(data.status === 'success') {
-                    // Acción de desbloqueo: Ocultar login y expandir Iframe
                     document.getElementById('login-ui').style.display = 'none';
-                    document.body.style.backgroundColor = "white";
                     const container = document.getElementById('bi-container');
                     container.style.display = 'block';
                     document.getElementById('bi-frame').src = data.url;
