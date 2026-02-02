@@ -9,7 +9,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@600;800&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        :root { --primary-blue: #004a99; --deep-blue: #003366; --accent-purple: #7c3aed; --text-gray: #64748b; }
+        :root { --primary-blue: #004a99; --deep-blue: #003366; --accent-cyan: #00d2ff; --text-gray: #64748b; }
         
         body, html { 
             font-family: 'DM Sans', sans-serif; 
@@ -18,9 +18,9 @@
             position: relative; overflow: hidden; 
         }
 
-        .circle-decoration { position: absolute; border-radius: 50%; opacity: 0.12; z-index: 0; filter: blur(50px); }
+        .circle-decoration { position: absolute; border-radius: 50%; opacity: 0.15; z-index: 0; filter: blur(50px); }
         .c1 { width: 300px; height: 300px; background: var(--primary-blue); top: -100px; left: -100px; animation: float 10s infinite; }
-        .c2 { width: 400px; height: 400px; background: var(--accent-purple); bottom: -150px; right: -150px; animation: float 12s infinite reverse; }
+        .c2 { width: 400px; height: 400px; background: var(--accent-cyan); bottom: -150px; right: -150px; animation: float 12s infinite reverse; }
         @keyframes float { 0%, 100% { transform: translate(0,0); } 50% { transform: translate(20px, 20px); } }
 
         .container { 
@@ -59,18 +59,14 @@
             z-index: 9999; 
             background: white; 
         }
-        iframe { 
-            width: 100%; 
-            height: 100%; 
-            border: none; 
-        }
+        iframe { width: 100%; height: 100%; border: none; }
 
         #status-msg { margin-top: 15px; font-size: 13px; text-align: center; font-weight: 500; }
     </style>
 </head>
 <body>
-    <div class="circle c1"></div>
-    <div class="circle c2"></div>
+    <div class="circle-decoration c1"></div>
+    <div class="circle-decoration c2"></div>
 
     <div class="container" id="login-ui">
         <div class="login-section">
@@ -126,23 +122,26 @@
                 const data = await res.json();
                 
                 if(data.status === 'sent') {
+                    // AQUÍ ESTÁ EL CAMBIO: OCULTA MAIL Y MUESTRA TOKEN
                     document.getElementById('panel-email').style.display = 'none';
                     document.getElementById('panel-token').style.display = 'block';
                     document.getElementById('step-title').innerText = "Verificación";
-                    document.getElementById('step-desc').innerText = "Código enviado. Revisa tu correo (válido por 6 horas).";
-                    setMsg("Código enviado con éxito", "#10b981");
+                    document.getElementById('step-desc').innerText = "Código enviado con éxito. Tienes 6 horas para usarlo.";
+                    setMsg("Revisa tu bandeja de entrada", "#10b981");
                 } else {
                     setMsg(data.message, "#ef4444");
                     document.getElementById('btn1').disabled = false;
                 }
             } catch(e) {
-                setMsg("Error de conexión", "#ef4444");
+                setMsg("Error de conexión con el servidor", "#ef4444");
                 document.getElementById('btn1').disabled = false;
             }
         }
 
         async function verifyToken() {
             const tk = document.getElementById('token').value;
+            if(!tk) return setMsg("Ingresa el código", "#ef4444");
+
             document.getElementById('btn2').disabled = true;
             setMsg("Verificando acceso...", "#004a99");
 
@@ -161,7 +160,7 @@
                     document.getElementById('btn2').disabled = false;
                 }
             } catch(e) {
-                setMsg("Error en validación", "#ef4444");
+                setMsg("Falla en la validación", "#ef4444");
                 document.getElementById('btn2').disabled = false;
             }
         }
