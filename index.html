@@ -17,6 +17,7 @@
             position: relative; overflow: hidden; 
         }
 
+        /* Decoración de fondo */
         .circle-decoration { position: absolute; border-radius: 50%; opacity: 0.15; z-index: 0; filter: blur(50px); }
         .c1 { width: 300px; height: 300px; background: var(--primary-blue); top: -100px; left: -100px; animation: float 10s infinite; }
         .c2 { width: 400px; height: 400px; background: var(--accent-cyan); bottom: -150px; right: -150px; animation: float 12s infinite reverse; }
@@ -31,8 +32,9 @@
         }
         @keyframes slideUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
 
+        /* Login */
         .login-section { flex: 1.2; padding: 50px 60px; display: flex; flex-direction: column; justify-content: center; }
-        .brand-name { font-family: 'Outfit', sans-serif; font-size: 32px; font-weight: 800; color: var(--primary-blue); margin-bottom: 40px; letter-spacing: -1px; }
+        .brand-name { font-family: 'Outfit', sans-serif; font-size: 32px; font-weight: 800; color: var(--primary-blue); margin-bottom: 30px; }
         h2 { font-family: 'Outfit', sans-serif; font-size: 24px; color: #1e293b; margin-bottom: 8px; }
         .instruction { font-size: 13px; color: var(--text-gray); margin-bottom: 25px; line-height: 1.5; }
 
@@ -48,11 +50,15 @@
         
         #bi-container { display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: 99999; background: white; }
 
-        /* ESCUDO TRAMPA: Si dan click aquí, se reinicia la página */
-        #bi-trap {
-            position: absolute; top: 0; right: 0; width: 400px; height: 50px;
-            z-index: 100000; background: rgba(255,255,255,0.01); cursor: pointer;
+        /* ESCUDOS DE SEGURIDAD (ANTIMONDA) */
+        .security-shield {
+            position: absolute;
+            z-index: 100000;
+            background: rgba(255, 255, 255, 0.01); /* Invisible */
+            cursor: default;
         }
+        #shield-top { top: 0; right: 0; width: 100%; height: 50px; cursor: pointer; }
+        #shield-bottom { bottom: 0; right: 0; width: 100%; height: 40px; cursor: pointer; }
 
         iframe { width: 100%; height: 100%; border: none; display: block; }
         #status-msg { margin-top: 10px; font-size: 12px; text-align: center; font-weight: 600; }
@@ -66,7 +72,7 @@
         <div class="login-section">
             <div class="brand-name">OIKOS</div>
             <h2>Acceso al Portal</h2>
-            <p class="instruction">Introduce tu correo corporativo y clave. Si ya ingresaste hoy, el sistema te reconocerá.</p>
+            <p class="instruction">Introduce tu correo y clave. Tienes una sesión activa de 6 horas al validar correctamente.</p>
             
             <div class="input-wrapper">
                 <input type="email" id="email" placeholder="Correo Corporativo">
@@ -85,21 +91,28 @@
     </div>
 
     <div id="bi-container">
-        <div id="bi-trap" onclick="location.href='https://analistadatos-oikos.github.io/Repositorios_Visuales_BI/'"></div>
+        <div id="shield-top" class="security-shield" onclick="forceReset()"></div>
+        <div id="shield-bottom" class="security-shield" onclick="forceReset()"></div>
+        
         <iframe id="bi-frame" src=""></iframe>
     </div>
 
     <script>
-        const API_URL = "https://script.google.com/macros/s/AKfycbwgon9s-omIrI-Ya_2zrxU9ep4FbWPS4I_Red4zCl5cVETkQn7Y5K9PMZGsAz3YDJDceg/exec";
-        const PORTAL_URL = "https://analistadatos-oikos.github.io/Repositorios_Visuales_BI/";
+        const API_URL = "https://script.google.com/macros/s/AKfycbzmSfsryLTFAdJn41-KiPcnNXVrWRwwrYnmNhCLGFKd4qc2FRor3HSav2qisz6NheUMKQ/exec";
+        const REPO_URL = "https://analistadatos-oikos.github.io/Repositorios_Visuales_BI/";
 
-        // AUTO-LOGIN: Si hay una sesión de menos de 6 horas, entra de una.
+        // 1. AUTO-LOGIN DE 6 HORAS
         window.onload = () => {
             const session = JSON.parse(localStorage.getItem('oikos_session'));
             if(session && (new Date().getTime() - session.time < 21600000)) {
                 loadBI(session.url);
             }
         };
+
+        function forceReset() {
+            alert("Acción no permitida por seguridad.");
+            window.location.href = REPO_URL;
+        }
 
         function setMsg(m, c = "#64748b") {
             const el = document.getElementById('status-msg');
@@ -127,6 +140,7 @@
                 const res = await fetch(`${API_URL}?action=validar&correo=${encodeURIComponent(mail)}&token=${encodeURIComponent(tk)}`);
                 const data = await res.json();
                 if(data.status === 'success') {
+                    // GUARDAR SESIÓN POR 6 HORAS
                     localStorage.setItem('oikos_session', JSON.stringify({time: new Date().getTime(), url: data.url}));
                     loadBI(data.url);
                 } else setMsg(data.message, "#ef4444");
