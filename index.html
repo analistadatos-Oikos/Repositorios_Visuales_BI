@@ -11,10 +11,10 @@
         * { margin: 0; padding: 0; box-sizing: border-box; }
         :root { --primary-blue: #004a99; --deep-blue: #003366; --accent-purple: #7c3aed; --text-gray: #64748b; }
         
-        body { 
+        body, html { 
             font-family: 'DM Sans', sans-serif; 
             background: linear-gradient(135deg, #f0f4ff 0%, #e8ecf9 100%); 
-            min-height: 100vh; display: flex; align-items: center; justify-content: center; 
+            height: 100%; width: 100%; display: flex; align-items: center; justify-content: center; 
             position: relative; overflow: hidden; 
         }
 
@@ -33,47 +33,39 @@
 
         @keyframes slideUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* Sección Izquierda */
         .login-section { flex: 1.2; padding: 60px; display: flex; flex-direction: column; justify-content: center; }
-        
-        /* Texto OIKOS Azul Pro */
-        .brand-name { 
-            font-family: 'Outfit', sans-serif; font-size: 32px; font-weight: 800; 
-            color: var(--primary-blue); margin-bottom: 40px; letter-spacing: -1px;
-        }
-        
+        .brand-name { font-family: 'Outfit', sans-serif; font-size: 32px; font-weight: 800; color: var(--primary-blue); margin-bottom: 40px; letter-spacing: -1px; }
         h2 { font-family: 'Outfit', sans-serif; font-size: 26px; color: #1e293b; margin-bottom: 12px; }
         .instruction { font-size: 14px; color: var(--text-gray); margin-bottom: 30px; line-height: 1.6; }
 
-        .input-wrapper { 
-            display: flex; align-items: center; background: #f8fafc; 
-            border: 2px solid #e2e8f0; border-radius: 14px; transition: 0.3s; margin-bottom: 20px;
-        }
+        .input-wrapper { display: flex; align-items: center; background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 14px; transition: 0.3s; margin-bottom: 20px; }
         .input-wrapper:focus-within { border-color: var(--primary-blue); background: white; }
-        .input-wrapper input { 
-            flex: 1; padding: 18px; border: none; background: transparent; 
-            outline: none; font-size: 15px; color: #1e293b; 
-        }
+        .input-wrapper input { flex: 1; padding: 18px; border: none; background: transparent; outline: none; font-size: 15px; color: #1e293b; }
 
-        .main-button { 
-            width: 100%; padding: 18px; background: var(--primary-blue); 
-            color: white; border: none; border-radius: 14px; font-weight: 700; 
-            font-family: 'Outfit', sans-serif; cursor: pointer; transition: 0.3s;
-            box-shadow: 0 10px 25px rgba(0, 74, 153, 0.2);
-        }
+        .main-button { width: 100%; padding: 18px; background: var(--primary-blue); color: white; border: none; border-radius: 14px; font-weight: 700; font-family: 'Outfit', sans-serif; cursor: pointer; transition: 0.3s; box-shadow: 0 10px 25px rgba(0, 74, 153, 0.2); }
         .main-button:hover { background: var(--deep-blue); transform: translateY(-2px); }
-        .main-button:disabled { background: #cbd5e0; cursor: not-allowed; }
 
-        /* Sección Derecha */
-        .welcome-section { 
-            flex: 1; background: linear-gradient(150deg, var(--primary-blue) 0%, var(--deep-blue) 100%); 
-            padding: 60px; display: flex; flex-direction: column; align-items: center; 
-            justify-content: center; text-align: center; color: white; position: relative;
-        }
-        .welcome-section h1 { font-family: 'Outfit', sans-serif; font-size: 44px; margin-bottom: 20px; letter-spacing: -1px; }
+        .welcome-section { flex: 1; background: linear-gradient(150deg, var(--primary-blue) 0%, var(--deep-blue) 100%); padding: 60px; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; color: white; }
+        .welcome-section h1 { font-family: 'Outfit', sans-serif; font-size: 44px; margin-bottom: 20px; }
         .welcome-section p { font-size: 15px; opacity: 0.8; line-height: 1.6; max-width: 280px; }
 
-        #bi-container { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 2000; background: white; }
+        /* FIX: EL BI AHORA OCUPA TODO EL ANCHO Y ALTO */
+        #bi-container { 
+            display: none; 
+            position: fixed; 
+            top: 0; 
+            left: 0; 
+            width: 100vw; 
+            height: 100vh; 
+            z-index: 9999; 
+            background: white; 
+        }
+        iframe { 
+            width: 100%; 
+            height: 100%; 
+            border: none; 
+        }
+
         #status-msg { margin-top: 15px; font-size: 13px; text-align: center; font-weight: 500; }
     </style>
 </head>
@@ -114,7 +106,8 @@
     </div>
 
     <script>
-        const API_URL = "https://script.google.com/macros/s/AKfycbxbFX-nh7guiy483V9HEivoWaHDmm8iU7llYr4SdMh1bZvlfX-Nksza3sNIsS-dXWuSjw/exec";
+        // RECUERDA VERIFICAR QUE ESTA URL SEA LA TUYA DE APPS SCRIPT
+        const API_URL = "https://script.google.com/macros/s/AKfycbzNB-Y6S_6p3SNLeuZXlGSsgumN6jZgESordQ3PdWHmspjTfPAPVovmwn9Zfx-gtJauEg/exec";
         let userMail = "";
 
         function setMsg(m, c = "#64748b") {
@@ -160,8 +153,11 @@
                 const data = await res.json();
 
                 if(data.status === 'success') {
+                    // AQUÍ ESTÁ EL TRUCO: OCULTAMOS TODO Y MOSTRAMOS EL IFRAME EN TODA LA PANTALLA
                     document.getElementById('login-ui').style.display = 'none';
-                    document.getElementById('bi-container').style.display = 'block';
+                    document.body.style.overflow = 'hidden';
+                    const container = document.getElementById('bi-container');
+                    container.style.display = 'block';
                     document.getElementById('bi-frame').src = data.url;
                 } else {
                     setMsg(data.message, "#ef4444");
