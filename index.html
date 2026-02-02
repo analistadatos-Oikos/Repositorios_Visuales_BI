@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>OIKOS Analytics Portal</title>
     <link rel="icon" type="image/png" href="https://oikos.com.co/wp-content/uploads/2021/01/cropped-Favicon-Oikos-32x32.png">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@600;800&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -33,42 +32,26 @@
         @keyframes slideUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
 
         .login-section { flex: 1.2; padding: 50px 60px; display: flex; flex-direction: column; justify-content: center; }
-        .brand-name { font-family: 'Outfit', sans-serif; font-size: 32px; font-weight: 800; color: var(--primary-blue); margin-bottom: 30px; }
+        .brand-name { font-family: 'Outfit', sans-serif; font-size: 32px; font-weight: 800; color: var(--primary-blue); margin-bottom: 40px; letter-spacing: -1px; }
         h2 { font-family: 'Outfit', sans-serif; font-size: 24px; color: #1e293b; margin-bottom: 8px; }
         .instruction { font-size: 13px; color: var(--text-gray); margin-bottom: 25px; line-height: 1.5; }
 
         .input-wrapper { display: flex; align-items: center; background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 14px; transition: 0.3s; margin-bottom: 12px; }
-        .input-wrapper:focus-within { border-color: var(--primary-blue); background: white; }
         .input-wrapper input { flex: 1; padding: 18px; border: none; background: transparent; outline: none; font-size: 14px; color: #1e293b; }
 
-        .btn-request { width: 100%; padding: 12px; background: white; color: var(--primary-blue); border: 2px solid var(--primary-blue); border-radius: 12px; font-weight: 700; cursor: pointer; margin-bottom: 15px; font-size: 12px; transition: 0.3s; }
-        .btn-request:hover { background: #f0f7ff; }
+        .btn-request { width: 100%; padding: 12px; background: white; color: var(--primary-blue); border: 2px solid var(--primary-blue); border-radius: 12px; font-weight: 700; cursor: pointer; margin-bottom: 15px; font-size: 12px; }
 
         .main-button { width: 100%; padding: 18px; background: var(--primary-blue); color: white; border: none; border-radius: 14px; font-weight: 700; font-family: 'Outfit', sans-serif; cursor: pointer; transition: 0.3s; box-shadow: 0 10px 25px rgba(0, 74, 153, 0.2); }
 
         .welcome-section { flex: 1; background: linear-gradient(150deg, var(--primary-blue) 0%, var(--deep-blue) 100%); padding: 60px; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; color: white; }
         .welcome-section h1 { font-family: 'Outfit', sans-serif; font-size: 44px; margin-bottom: 20px; }
         
-        /* BI CONTAINER FULL SCREEN */
-        #bi-container { 
-            display: none; 
-            position: fixed; 
-            top: 0; left: 0; 
-            width: 100vw; height: 100vh; 
-            z-index: 99999; 
-            background: white; 
-        }
+        #bi-container { display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: 99999; background: white; }
 
-        /* ESCUDO DE SEGURIDAD: Bloquea la esquina superior derecha (Donde está el botón de "Abrir en ventana nueva") */
-        #bi-shield {
-            position: absolute;
-            top: 0;
-            right: 0;
-            width: 300px; /* Tamaño suficiente para cubrir los botones de Power BI */
-            height: 50px;
-            z-index: 100000; /* Por encima del Iframe */
-            background: transparent; /* Invisible pero bloquea clics */
-            cursor: default;
+        /* ESCUDO TRAMPA: Si dan click aquí, se reinicia la página */
+        #bi-trap {
+            position: absolute; top: 0; right: 0; width: 400px; height: 50px;
+            z-index: 100000; background: rgba(255,255,255,0.01); cursor: pointer;
         }
 
         iframe { width: 100%; height: 100%; border: none; display: block; }
@@ -83,35 +66,41 @@
         <div class="login-section">
             <div class="brand-name">OIKOS</div>
             <h2>Acceso al Portal</h2>
-            <p class="instruction">Introduce tu correo corporativo y clave. Las claves tienen vigencia de 6 horas.</p>
+            <p class="instruction">Introduce tu correo corporativo y clave. Si ya ingresaste hoy, el sistema te reconocerá.</p>
             
             <div class="input-wrapper">
-                <input type="email" id="email" placeholder="Correo Corporativo" autocomplete="off">
+                <input type="email" id="email" placeholder="Correo Corporativo">
             </div>
             
-            <button class="btn-request" id="btn1" onclick="requestToken()">SOLICITAR CLAVE ALFANUMÉRICA</button>
+            <button class="btn-request" onclick="requestToken()">VALIDAR USUARIO</button>
 
             <div class="input-wrapper">
-                <input type="text" id="token" placeholder="Introduce tu Clave" maxlength="6">
+                <input type="text" id="token" placeholder="Clave Alfanumérica" maxlength="6">
             </div>
             
-            <button class="main-button" id="btn2" onclick="verifyToken()">INGRESAR AL SISTEMA</button>
+            <button class="main-button" onclick="verifyToken()">INGRESAR AL SISTEMA</button>
             <div id="status-msg"></div>
         </div>
-
-        <div class="welcome-section">
-            <h1>Analytics</h1>
-            <p>Portal de inteligencia de negocios Grupo OIKOS S.A.S</p>
-        </div>
+        <div class="welcome-section"><h1>Analytics</h1><p>Grupo Empresarial OIKOS S.A.S</p></div>
     </div>
 
     <div id="bi-container">
-        <div id="bi-shield"></div> <iframe id="bi-frame" src=""></iframe>
+        <div id="bi-trap" onclick="location.href='https://analistadatos-oikos.github.io/Repositorios_Visuales_BI/'"></div>
+        <iframe id="bi-frame" src=""></iframe>
     </div>
 
     <script>
         const API_URL = "https://script.google.com/macros/s/AKfycbzNB-Y6S_6p3SNLeuZXlGSsgumN6jZgESordQ3PdWHmspjTfPAPVovmwn9Zfx-gtJauEg/exec";
-        
+        const PORTAL_URL = "https://analistadatos-oikos.github.io/Repositorios_Visuales_BI/";
+
+        // AUTO-LOGIN: Si hay una sesión de menos de 6 horas, entra de una.
+        window.onload = () => {
+            const session = JSON.parse(localStorage.getItem('oikos_session'));
+            if(session && (new Date().getTime() - session.time < 21600000)) {
+                loadBI(session.url);
+            }
+        };
+
         function setMsg(m, c = "#64748b") {
             const el = document.getElementById('status-msg');
             el.innerText = m; el.style.color = c;
@@ -119,12 +108,12 @@
 
         async function requestToken() {
             const mail = document.getElementById('email').value;
-            if(!mail.includes('@')) return setMsg("Ingresa un correo corporativo", "#ef4444");
+            if(!mail.includes('@')) return setMsg("Correo no válido", "#ef4444");
             setMsg("Enviando clave...", "#004a99");
             try {
                 const res = await fetch(`${API_URL}?action=solicitar&correo=${encodeURIComponent(mail)}`);
                 const data = await res.json();
-                if(data.status === 'sent') setMsg("¡Clave enviada! Revisa tu correo.", "#10b981");
+                if(data.status === 'sent') setMsg("¡Clave enviada! Válida por 6h.", "#10b981");
                 else setMsg(data.message, "#ef4444");
             } catch(e) { setMsg("Error de conexión", "#ef4444"); }
         }
@@ -132,18 +121,22 @@
         async function verifyToken() {
             const mail = document.getElementById('email').value;
             const tk = document.getElementById('token').value;
-            if(!mail || !tk) return setMsg("Completa correo y clave", "#ef4444");
-            setMsg("Verificando acceso...", "#004a99");
+            if(!mail || !tk) return setMsg("Completa los datos", "#ef4444");
+            setMsg("Verificando...", "#004a99");
             try {
                 const res = await fetch(`${API_URL}?action=validar&correo=${encodeURIComponent(mail)}&token=${encodeURIComponent(tk)}`);
                 const data = await res.json();
                 if(data.status === 'success') {
-                    document.getElementById('login-ui').style.display = 'none';
-                    const container = document.getElementById('bi-container');
-                    container.style.display = 'block';
-                    document.getElementById('bi-frame').src = data.url;
+                    localStorage.setItem('oikos_session', JSON.stringify({time: new Date().getTime(), url: data.url}));
+                    loadBI(data.url);
                 } else setMsg(data.message, "#ef4444");
             } catch(e) { setMsg("Error de validación", "#ef4444"); }
+        }
+
+        function loadBI(url) {
+            document.getElementById('login-ui').style.display = 'none';
+            document.getElementById('bi-container').style.display = 'block';
+            document.getElementById('bi-frame').src = url;
         }
     </script>
 </body>
