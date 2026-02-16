@@ -10,7 +10,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@600;800&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        :root { --primary-blue: #004a99; --deep-blue: #003366; --accent-cyan: #00d2ff; --text-gray: #64748b; }
+        :root { --primary-blue: #004a99; --deep-blue: #003366; --accent-cyan: #00d2ff; --text-gray: #64748b; --caledonia-red: #9C182F; }
         
         body, html { 
             font-family: 'DM Sans', sans-serif; 
@@ -46,6 +46,10 @@
 
         .main-button { width: 100%; padding: 18px; background: var(--primary-blue); color: white; border: none; border-radius: 14px; font-weight: 700; font-family: 'Outfit', sans-serif; cursor: pointer; transition: 0.3s; box-shadow: 0 10px 25px rgba(0, 74, 153, 0.2); margin-bottom: 12px; }
         .main-button:hover { background: var(--deep-blue); transform: translateY(-2px); }
+
+        /* BOTÓN ESPECIAL CALEDONIA */
+        .main-button.caledonia { background: var(--caledonia-red); box-shadow: 0 10px 25px rgba(156, 24, 47, 0.2); }
+        .main-button.caledonia:hover { background: #7a1325; }
 
         /* BOTÓN SALIDA SEGURA - CENTRADO Y CON MEJOR ESTILO */
         .btn-logout {
@@ -84,13 +88,13 @@
             background: white; 
         }
 
-        /* BOTÓN HOME - MÁS LARGO, MÁS BAJO, EXTENDIDO A LA IZQUIERDA */
+        /* BOTÓN HOME - 180PX ANCHO, CONTENIDO CENTRADO */
         #btn-home {
             position: absolute;
             bottom: 2px;
             right: 2px;
             z-index: 100001;
-            padding: 9px 28px 9px 20px;
+            padding: 9px 15px;
             background: var(--primary-blue);
             color: white;
             border: none;
@@ -103,8 +107,9 @@
             font-size: 13px;
             display: flex;
             align-items: center;
+            justify-content: center;
             gap: 7px;
-            min-width: 140px;
+            width: 180px;
         }
         #btn-home:hover {
             background: var(--deep-blue);
@@ -121,8 +126,8 @@
         #shield-home-extra {
             position: absolute;
             bottom: 0;
-            right: 145px;
-            width: 200px;
+            right: 185px;
+            width: 250px;
             height: 38px;
             z-index: 100000;
             background: rgba(255, 255, 255, 0.01);
@@ -136,9 +141,9 @@
                 padding: 8px 16px;
             }
             #btn-home {
-                padding: 8px 20px 8px 16px;
+                padding: 8px 12px;
                 font-size: 12px;
-                min-width: 120px;
+                width: 150px;
             }
             #btn-home svg {
                 width: 15px;
@@ -161,7 +166,7 @@
         #shield-bottom-right { 
             bottom: 0; 
             right: 0; 
-            width: 350px; 
+            width: 440px; 
             height: 42px; 
         }
 
@@ -315,7 +320,7 @@
                     <p class="instruction">Elige el dashboard que deseas visualizar</p>
                     <div id="buttons-container" style="display: flex; flex-direction: column; margin-top: 30px;">
                         ${reportes.map((r, idx) => `
-                            <button class="main-button" onclick="loadReport('${r.url}')">
+                            <button class="main-button ${idx === 1 ? 'caledonia' : ''}" onclick="loadReport('${r.url}')">
                                 ${r.nombre}
                             </button>
                         `).join('')}
@@ -339,3 +344,4 @@
     </script>
 </body>
 </html>
+
