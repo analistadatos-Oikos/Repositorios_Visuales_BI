@@ -47,11 +47,9 @@
         .main-button { width: 100%; padding: 18px; background: var(--primary-blue); color: white; border: none; border-radius: 14px; font-weight: 700; font-family: 'Outfit', sans-serif; cursor: pointer; transition: 0.3s; box-shadow: 0 10px 25px rgba(0, 74, 153, 0.2); margin-bottom: 12px; }
         .main-button:hover { background: var(--deep-blue); transform: translateY(-2px); }
 
-        /* BOTÓN ESPECIAL CALEDONIA */
         .main-button.caledonia { background: var(--caledonia-red); box-shadow: 0 10px 25px rgba(156, 24, 47, 0.2); }
         .main-button.caledonia:hover { background: #7a1325; }
 
-        /* BOTÓN SALIDA SEGURA - CENTRADO Y CON MEJOR ESTILO */
         .btn-logout {
             width: 100%;
             padding: 10px 20px;
@@ -88,7 +86,6 @@
             background: white; 
         }
 
-        /* BOTÓN HOME - 180PX ANCHO, CONTENIDO CENTRADO */
         #btn-home {
             position: absolute;
             bottom: 2px;
@@ -122,7 +119,6 @@
             fill: white;
         }
 
-        /* SHIELD ADICIONAL INVISIBLE EXTENDIDO */
         #shield-home-extra {
             position: absolute;
             bottom: 0;
@@ -134,7 +130,6 @@
             cursor: pointer;
         }
 
-        /* RESPONSIVE */
         @media (max-width: 768px) {
             .btn-logout {
                 font-size: 11px;
@@ -182,7 +177,7 @@
         <div class="login-section">
             <div class="brand-name">OIKOS</div>
             <h2>Acceso al Portal</h2>
-            <p class="instruction">Introduce tu correo y clave. Si ya ingresaste hoy, tu sesión estará activa por 6 horas.</p>
+            <p class="instruction">Introduce tu correo y clave. Si ya ingresaste hoy, tu sesión estará activa por 12 horas.</p>
             
             <div class="input-wrapper">
                 <input type="email" id="email" placeholder="ejemplo@oikos.com.co" spellcheck="false">
@@ -217,22 +212,52 @@
     </div>
 
     <script>
+        // ANTI-INSPECCIÓN: Deshabilitar consola
+        (function() {
+            const noop = () => {};
+            const methods = ['log', 'debug', 'info', 'warn', 'error', 'dir', 'dirxml', 'trace', 'profile', 'profileEnd'];
+            methods.forEach(method => { console[method] = noop; });
+        })();
+
+        // ANTI-INSPECCIÓN: Detectar DevTools
+        let devtoolsOpen = false;
+        const threshold = 160;
+        setInterval(() => {
+            if (window.outerWidth - window.innerWidth > threshold || window.outerHeight - window.innerHeight > threshold) {
+                if (!devtoolsOpen) {
+                    devtoolsOpen = true;
+                    alert("Acceso no autorizado detectado. Redirigiendo...");
+                    window.location.href = "https://analistadatos-oikos.github.io/Repositorios_Visuales_BI/";
+                }
+            } else {
+                devtoolsOpen = false;
+            }
+        }, 1000);
+
         const API_URL = "https://script.google.com/macros/s/AKfycbxSGzS10IPvkPYvBaFwnrZ3EnCxAld__cxjzjHP6-8q31BFrE5oXVR3HMlI4MeQ4dadDw/exec";
         const REPO_URL = "https://analistadatos-oikos.github.io/Repositorios_Visuales_BI/";
+        const SESSION_DURATION = 43200000; // 12 HORAS en milisegundos
 
+        // OFUSCACIÓN TRIPLE
         function encodeUrl(url) {
-            return btoa(encodeURIComponent(url));
+            let step1 = btoa(url);
+            let step2 = step1.split('').reverse().join('');
+            let step3 = btoa(step2);
+            return step3;
         }
 
         function decodeUrl(encoded) {
-            return decodeURIComponent(atob(encoded));
+            let step1 = atob(encoded);
+            let step2 = step1.split('').reverse().join('');
+            let step3 = atob(step2);
+            return step3;
         }
 
         window.onload = () => {
             const savedSession = JSON.parse(localStorage.getItem('oikos_auth_token'));
             if(savedSession) {
                 const now = new Date().getTime();
-                if(now - savedSession.time < 21600000) {
+                if(now - savedSession.time < SESSION_DURATION) {
                     showReportSelector(savedSession.reportes);
                 }
             }
@@ -279,7 +304,7 @@
             try {
                 const res = await fetch(`${API_URL}?action=solicitar&correo=${encodeURIComponent(mail)}`);
                 const data = await res.json();
-                if(data.status === 'sent') setStatus("¡Clave enviada! Válida por 6h.", "#10b981");
+                if(data.status === 'sent') setStatus("¡Clave enviada! Válida por 12h.", "#10b981");
                 else setStatus(data.message, "#ef4444");
             } catch(e) { setStatus("Error de red", "#ef4444"); }
         }
@@ -344,4 +369,5 @@
     </script>
 </body>
 </html>
+
 
