@@ -60,28 +60,51 @@
             background: white; 
         }
 
-        /* BOTÓN HOME - ABAJO A LA DERECHA */
+        /* BOTÓN HOME - MÁS ANCHO, ADAPTATIVO Y MÁS A LA IZQUIERDA */
         #btn-home {
             position: absolute;
-            bottom: 15px;
-            right: 15px;
+            bottom: 12px;
+            left: 50%;
+            transform: translateX(-50%);
             z-index: 100001;
-            padding: 12px 28px;
+            padding: 10px 24px;
             background: var(--primary-blue);
             color: white;
             border: none;
-            border-radius: 10px;
+            border-radius: 8px;
             font-weight: 700;
             font-family: 'Outfit', sans-serif;
             cursor: pointer;
             transition: 0.3s;
             box-shadow: 0 4px 12px rgba(0, 74, 153, 0.4);
             font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            min-width: 120px;
         }
         #btn-home:hover {
             background: var(--deep-blue);
-            transform: translateY(-2px);
+            transform: translateX(-50%) translateY(-2px);
             box-shadow: 0 6px 16px rgba(0, 74, 153, 0.5);
+        }
+        #btn-home svg {
+            width: 18px;
+            height: 18px;
+            fill: white;
+        }
+
+        /* RESPONSIVE */
+        @media (max-width: 768px) {
+            #btn-home {
+                padding: 8px 16px;
+                font-size: 12px;
+                min-width: 100px;
+            }
+            #btn-home svg {
+                width: 16px;
+                height: 16px;
+            }
         }
 
         .shield { 
@@ -137,14 +160,19 @@
     </div>
 
     <div id="bi-container">
-        <button id="btn-home" onclick="volverHome()">HOME</button>
+        <button id="btn-home" onclick="volverHome()">
+            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/>
+            </svg>
+            HOME
+        </button>
         <div id="shield-top-right" class="shield" onclick="securityReset()"></div>
         <div id="shield-bottom-right" class="shield" onclick="securityReset()"></div>
         <iframe id="bi-frame" src=""></iframe>
     </div>
 
     <script>
-        const API_URL = "https://script.google.com/macros/s/AKfycbxSGzS10IPvkPYvBaFwnrZ3EnCxAld__cxjzjHP6-8q31BFrE5oXVR3HMlI4MeQ4dadDw/exec";
+        const API_URL = "https://script.google.com/macros/s/AKfycbzvsSjroWeRF9XZnWtdLLHGbj3luxszPObIwwPdMDTNCWdmjvDYWF2fnO9i0AfRdrvYbA/exec";
         const REPO_URL = "https://analistadatos-oikos.github.io/Repositorios_Visuales_BI/";
 
         window.onload = () => {
@@ -245,4 +273,5 @@
     </script>
 </body>
 </html>
+
 
