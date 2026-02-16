@@ -60,23 +60,23 @@
             background: white; 
         }
 
-        /* BOTÓN HOME - POSICIONADO ARRIBA A LA DERECHA EN EL BI */
+        /* BOTÓN HOME - ABAJO A LA DERECHA */
         #btn-home {
             position: absolute;
-            top: 10px;
-            right: 10px;
+            bottom: 15px;
+            right: 15px;
             z-index: 100001;
-            padding: 10px 20px;
+            padding: 12px 28px;
             background: var(--primary-blue);
             color: white;
             border: none;
-            border-radius: 8px;
+            border-radius: 10px;
             font-weight: 700;
             font-family: 'Outfit', sans-serif;
             cursor: pointer;
             transition: 0.3s;
             box-shadow: 0 4px 12px rgba(0, 74, 153, 0.4);
-            font-size: 13px;
+            font-size: 14px;
         }
         #btn-home:hover {
             background: var(--deep-blue);
@@ -137,7 +137,7 @@
     </div>
 
     <div id="bi-container">
-        <button id="btn-home" onclick="volverHome()">🏠 HOME</button>
+        <button id="btn-home" onclick="volverHome()">HOME</button>
         <div id="shield-top-right" class="shield" onclick="securityReset()"></div>
         <div id="shield-bottom-right" class="shield" onclick="securityReset()"></div>
         <iframe id="bi-frame" src=""></iframe>
