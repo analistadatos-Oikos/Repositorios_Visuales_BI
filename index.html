@@ -60,6 +60,30 @@
             background: white; 
         }
 
+        /* BOTÓN HOME */
+        #btn-home {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            z-index: 100001;
+            padding: 12px 24px;
+            background: var(--primary-blue);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-weight: 700;
+            font-family: 'Outfit', sans-serif;
+            cursor: pointer;
+            transition: 0.3s;
+            box-shadow: 0 4px 12px rgba(0, 74, 153, 0.3);
+            font-size: 14px;
+        }
+        #btn-home:hover {
+            background: var(--deep-blue);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(0, 74, 153, 0.4);
+        }
+
         .shield { 
             position: absolute; 
             z-index: 100000; 
@@ -113,13 +137,14 @@
     </div>
 
     <div id="bi-container">
+        <button id="btn-home" onclick="volverHome()">🏠 Regresar a Home</button>
         <div id="shield-top-right" class="shield" onclick="securityReset()"></div>
         <div id="shield-bottom-right" class="shield" onclick="securityReset()"></div>
         <iframe id="bi-frame" src=""></iframe>
     </div>
 
     <script>
-        const API_URL = "https://script.google.com/macros/s/AKfycbxSGzS10IPvkPYvBaFwnrZ3EnCxAld__cxjzjHP6-8q31BFrE5oXVR3HMlI4MeQ4dadDw/exec";
+        const API_URL = "https://script.google.com/macros/s/AKfycbzvsSjroWeRF9XZnWtdLLHGbj3luxszPObIwwPdMDTNCWdmjvDYWF2fnO9i0AfRdrvYbA/exec";
         const REPO_URL = "https://analistadatos-oikos.github.io/Repositorios_Visuales_BI/";
 
         window.onload = () => {
@@ -131,6 +156,18 @@
                 }
             }
         };
+
+        function volverHome() {
+            document.getElementById('bi-container').style.display = 'none';
+            document.getElementById('bi-frame').src = '';
+            
+            const savedSession = JSON.parse(localStorage.getItem('oikos_auth_token'));
+            if(savedSession && savedSession.reportes.length > 1) {
+                showReportSelector(savedSession.reportes);
+            } else {
+                window.location.reload();
+            }
+        }
 
         function securityReset() {
             alert("Acción no permitida por seguridad corporativa.");
@@ -205,6 +242,4 @@
         }
     </script>
 </body>
-</html>
-
 </html>
