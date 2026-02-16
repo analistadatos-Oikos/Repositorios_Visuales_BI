@@ -47,7 +47,7 @@
         .main-button { width: 100%; padding: 18px; background: var(--primary-blue); color: white; border: none; border-radius: 14px; font-weight: 700; font-family: 'Outfit', sans-serif; cursor: pointer; transition: 0.3s; box-shadow: 0 10px 25px rgba(0, 74, 153, 0.2); margin-bottom: 12px; }
         .main-button:hover { background: var(--deep-blue); transform: translateY(-2px); }
 
-        /* BOTÓN SALIDA SEGURA */
+        /* BOTÓN SALIDA SEGURA - SOLO SELECTOR */
         .btn-logout {
             position: absolute;
             bottom: 20px;
@@ -83,13 +83,13 @@
             background: white; 
         }
 
-        /* BOTÓN HOME - ABAJO DERECHA MÁS PEGADO */
+        /* BOTÓN HOME - MÁS LARGO Y MÁS ABAJO CUBRIENDO FACEBOOK */
         #btn-home {
             position: absolute;
-            bottom: 5px;
-            right: 5px;
+            bottom: 3px;
+            right: 3px;
             z-index: 100001;
-            padding: 10px 20px;
+            padding: 11px 24px;
             background: var(--primary-blue);
             color: white;
             border: none;
@@ -103,6 +103,7 @@
             display: flex;
             align-items: center;
             gap: 6px;
+            min-width: 110px;
         }
         #btn-home:hover {
             background: var(--deep-blue);
@@ -115,6 +116,18 @@
             fill: white;
         }
 
+        /* SHIELD ADICIONAL INVISIBLE ABAJO DEL BOTÓN HOME */
+        #shield-home-extra {
+            position: absolute;
+            bottom: 0;
+            right: 120px;
+            width: 150px;
+            height: 40px;
+            z-index: 100000;
+            background: rgba(255, 255, 255, 0.01);
+            cursor: pointer;
+        }
+
         /* RESPONSIVE */
         @media (max-width: 768px) {
             .btn-logout {
@@ -124,8 +137,9 @@
                 padding: 6px 12px;
             }
             #btn-home {
-                padding: 8px 16px;
+                padding: 9px 18px;
                 font-size: 12px;
+                min-width: 100px;
             }
             #btn-home svg {
                 width: 14px;
@@ -148,7 +162,7 @@
         #shield-bottom-right { 
             bottom: 0; 
             right: 0; 
-            width: 250px; 
+            width: 280px; 
             height: 45px; 
         }
 
@@ -178,8 +192,6 @@
             
             <button class="main-button" onclick="verifyToken()">INGRESAR AL SISTEMA</button>
             <div id="status-msg"></div>
-
-            <button class="btn-logout" onclick="salidaSegura()">🔒 SALIDA SEGURA</button>
         </div>
         <div class="welcome-section">
             <h1>Analytics</h1>
@@ -196,12 +208,22 @@
         </button>
         <div id="shield-top-right" class="shield" onclick="securityReset()"></div>
         <div id="shield-bottom-right" class="shield" onclick="securityReset()"></div>
+        <div id="shield-home-extra" class="shield" onclick="securityReset()"></div>
         <iframe id="bi-frame" src=""></iframe>
     </div>
 
     <script>
         const API_URL = "https://script.google.com/macros/s/AKfycbxSGzS10IPvkPYvBaFwnrZ3EnCxAld__cxjzjHP6-8q31BFrE5oXVR3HMlI4MeQ4dadDw/exec";
         const REPO_URL = "https://analistadatos-oikos.github.io/Repositorios_Visuales_BI/";
+
+        // OFUSCACIÓN DE URLs - Codificar en Base64
+        function encodeUrl(url) {
+            return btoa(encodeURIComponent(url));
+        }
+
+        function decodeUrl(encoded) {
+            return decodeURIComponent(atob(encoded));
+        }
 
         window.onload = () => {
             const savedSession = JSON.parse(localStorage.getItem('oikos_auth_token'));
@@ -214,16 +236,13 @@
         };
 
         function salidaSegura() {
-            // Limpiar TODO el storage y caché
             localStorage.clear();
             sessionStorage.clear();
             
-            // Limpiar cookies
             document.cookie.split(";").forEach(function(c) { 
                 document.cookie = c.replace(/^ +/, "").replace(/=.*/, "=;expires=" + new Date().toUTCString() + ";path=/"); 
             });
 
-            // Recargar página forzando descarga desde servidor
             window.location.href = window.location.href.split('?')[0] + '?t=' + new Date().getTime();
         }
 
@@ -271,11 +290,17 @@
                 const res = await fetch(`${API_URL}?action=validar&correo=${encodeURIComponent(mail)}&token=${encodeURIComponent(tk)}`);
                 const data = await res.json();
                 if(data.status === 'success') {
+                    // OFUSCAR URLs ANTES DE GUARDAR
+                    const reportesOfuscados = data.reportes.map(r => ({
+                        nombre: r.nombre,
+                        url: encodeUrl(r.url)
+                    }));
+                    
                     localStorage.setItem('oikos_auth_token', JSON.stringify({
                         time: new Date().getTime(),
-                        reportes: data.reportes
+                        reportes: reportesOfuscados
                     }));
-                    showReportSelector(data.reportes);
+                    showReportSelector(reportesOfuscados);
                 } else setStatus(data.message, "#ef4444");
             } catch(e) { setStatus("Falla de validación", "#ef4444"); }
         }
@@ -292,7 +317,7 @@
                     <h2>Selecciona tu Reporte</h2>
                     <p class="instruction">Elige el dashboard que deseas visualizar</p>
                     <div id="buttons-container" style="display: flex; flex-direction: column; margin-top: 30px;">
-                        ${reportes.map(r => `
+                        ${reportes.map((r, idx) => `
                             <button class="main-button" onclick="loadReport('${r.url}')">
                                 ${r.nombre}
                             </button>
@@ -308,11 +333,13 @@
             document.getElementById('login-ui').style.display = 'flex';
         }
 
-        function loadReport(url) {
+        function loadReport(encodedUrl) {
+            const realUrl = decodeUrl(encodedUrl);
             document.getElementById('login-ui').style.display = 'none';
             document.getElementById('bi-container').style.display = 'block';
-            document.getElementById('bi-frame').src = url;
+            document.getElementById('bi-frame').src = realUrl;
         }
     </script>
 </body>
 </html>
+
