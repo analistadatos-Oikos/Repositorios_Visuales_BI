@@ -60,28 +60,28 @@
             background: white; 
         }
 
-        /* BOTÓN HOME */
+        /* BOTÓN HOME - POSICIONADO ARRIBA A LA DERECHA EN EL BI */
         #btn-home {
             position: absolute;
-            top: 15px;
-            right: 15px;
+            top: 10px;
+            right: 10px;
             z-index: 100001;
-            padding: 12px 24px;
+            padding: 10px 20px;
             background: var(--primary-blue);
             color: white;
             border: none;
-            border-radius: 10px;
+            border-radius: 8px;
             font-weight: 700;
             font-family: 'Outfit', sans-serif;
             cursor: pointer;
             transition: 0.3s;
-            box-shadow: 0 4px 12px rgba(0, 74, 153, 0.3);
-            font-size: 14px;
+            box-shadow: 0 4px 12px rgba(0, 74, 153, 0.4);
+            font-size: 13px;
         }
         #btn-home:hover {
             background: var(--deep-blue);
             transform: translateY(-2px);
-            box-shadow: 0 6px 16px rgba(0, 74, 153, 0.4);
+            box-shadow: 0 6px 16px rgba(0, 74, 153, 0.5);
         }
 
         .shield { 
@@ -137,7 +137,7 @@
     </div>
 
     <div id="bi-container">
-        <button id="btn-home" onclick="volverHome()">🏠 Regresar a Home</button>
+        <button id="btn-home" onclick="volverHome()">🏠 HOME</button>
         <div id="shield-top-right" class="shield" onclick="securityReset()"></div>
         <div id="shield-bottom-right" class="shield" onclick="securityReset()"></div>
         <iframe id="bi-frame" src=""></iframe>
@@ -160,6 +160,7 @@
         function volverHome() {
             document.getElementById('bi-container').style.display = 'none';
             document.getElementById('bi-frame').src = '';
+            document.getElementById('login-ui').style.display = 'flex';
             
             const savedSession = JSON.parse(localStorage.getItem('oikos_auth_token'));
             if(savedSession && savedSession.reportes.length > 1) {
@@ -233,6 +234,7 @@
                     <p>Grupo Empresarial OIKOS S.A.S</p>
                 </div>
             `;
+            document.getElementById('login-ui').style.display = 'flex';
         }
 
         function loadReport(url) {
@@ -243,3 +245,4 @@
     </script>
 </body>
 </html>
+
