@@ -19,13 +19,11 @@
             position: relative; overflow: hidden; 
         }
 
-        /* Animación de círculos Pro */
         .circle-decoration { position: absolute; border-radius: 50%; opacity: 0.15; z-index: 0; filter: blur(50px); }
         .c1 { width: 300px; height: 300px; background: var(--primary-blue); top: -100px; left: -100px; animation: float 10s infinite; }
         .c2 { width: 400px; height: 400px; background: var(--accent-cyan); bottom: -150px; right: -150px; animation: float 12s infinite reverse; }
         @keyframes float { 0%, 100% { transform: translate(0,0); } 50% { transform: translate(20px, 20px); } }
 
-        /* Contenedor Login */
         .container { 
             display: flex; background: white; border-radius: 28px; 
             box-shadow: 0 40px 100px rgba(0, 0, 0, 0.1); 
@@ -46,14 +44,13 @@
         .btn-request { width: 100%; padding: 12px; background: white; color: var(--primary-blue); border: 2px solid var(--primary-blue); border-radius: 12px; font-weight: 700; cursor: pointer; margin-bottom: 15px; font-size: 12px; transition: 0.3s; }
         .btn-request:hover { background: #f0f7ff; }
 
-        .main-button { width: 100%; padding: 18px; background: var(--primary-blue); color: white; border: none; border-radius: 14px; font-weight: 700; font-family: 'Outfit', sans-serif; cursor: pointer; transition: 0.3s; box-shadow: 0 10px 25px rgba(0, 74, 153, 0.2); }
+        .main-button { width: 100%; padding: 18px; background: var(--primary-blue); color: white; border: none; border-radius: 14px; font-weight: 700; font-family: 'Outfit', sans-serif; cursor: pointer; transition: 0.3s; box-shadow: 0 10px 25px rgba(0, 74, 153, 0.2); margin-bottom: 12px; }
         .main-button:hover { background: var(--deep-blue); transform: translateY(-2px); }
 
         .welcome-section { flex: 1; background: linear-gradient(150deg, var(--primary-blue) 0%, var(--deep-blue) 100%); padding: 60px; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; color: white; }
         .welcome-section h1 { font-family: 'Outfit', sans-serif; font-size: 44px; margin-bottom: 20px; }
         .welcome-section p { font-size: 15px; opacity: 0.8; line-height: 1.6; max-width: 280px; }
 
-        /* BI CONTAINER FULL SCREEN */
         #bi-container { 
             display: none; 
             position: fixed; 
@@ -63,21 +60,18 @@
             background: white; 
         }
 
-        /* ESCUDOS SELECTIVOS: BLOQUEAN SOLO LOS BOTONES DE LA DERECHA Y ABAJO */
         .shield { 
             position: absolute; 
             z-index: 100000; 
             background: rgba(255, 255, 255, 0.01); 
             cursor: pointer; 
         }
-        /* Bloquea botón de "Abrir en ventana nueva" arriba a la derecha */
         #shield-top-right { 
             top: 0; 
             right: 0; 
             width: 180px; 
             height: 55px; 
         } 
-        /* Bloquea botón de "Compartir" y logo abajo a la derecha */
         #shield-bottom-right { 
             bottom: 0; 
             right: 0; 
@@ -125,17 +119,15 @@
     </div>
 
     <script>
-        // URL de tu Script de Google
-        const API_URL = "https://script.google.com/macros/s/AKfycbzvsSjroWeRF9XZnWtdLLHGbj3luxszPObIwwPdMDTNCWdmjvDYWF2fnO9i0AfRdrvYbA/exec";
+        const API_URL = "https://script.google.com/macros/s/AKfycbxSGzS10IPvkPYvBaFwnrZ3EnCxAld__cxjzjHP6-8q31BFrE5oXVR3HMlI4MeQ4dadDw/exec";
         const REPO_URL = "https://analistadatos-oikos.github.io/Repositorios_Visuales_BI/";
 
-        // 1. Lógica de Sesión Recordada (6 Horas)
         window.onload = () => {
             const savedSession = JSON.parse(localStorage.getItem('oikos_auth_token'));
             if(savedSession) {
                 const now = new Date().getTime();
-                if(now - savedSession.time < 21600000) { // 6 horas
-                    loadReport(savedSession.url);
+                if(now - savedSession.time < 21600000) {
+                    showReportSelector(savedSession.reportes);
                 }
             }
         };
@@ -171,14 +163,39 @@
                 const res = await fetch(`${API_URL}?action=validar&correo=${encodeURIComponent(mail)}&token=${encodeURIComponent(tk)}`);
                 const data = await res.json();
                 if(data.status === 'success') {
-                    // Guardamos la sesión localmente
                     localStorage.setItem('oikos_auth_token', JSON.stringify({
                         time: new Date().getTime(),
-                        url: data.url
+                        reportes: data.reportes
                     }));
-                    loadReport(data.url);
+                    showReportSelector(data.reportes);
                 } else setStatus(data.message, "#ef4444");
             } catch(e) { setStatus("Falla de validación", "#ef4444"); }
+        }
+
+        function showReportSelector(reportes) {
+            if(reportes.length === 1) {
+                loadReport(reportes[0].url);
+                return;
+            }
+
+            document.getElementById('login-ui').innerHTML = `
+                <div class="login-section" style="text-align: center;">
+                    <div class="brand-name">OIKOS Analytics</div>
+                    <h2>Selecciona tu Reporte</h2>
+                    <p class="instruction">Elige el dashboard que deseas visualizar</p>
+                    <div id="buttons-container" style="display: flex; flex-direction: column; margin-top: 30px;">
+                        ${reportes.map(r => `
+                            <button class="main-button" onclick="loadReport('${r.url}')">
+                                ${r.nombre}
+                            </button>
+                        `).join('')}
+                    </div>
+                </div>
+                <div class="welcome-section">
+                    <h1>Analytics</h1>
+                    <p>Grupo Empresarial OIKOS S.A.S</p>
+                </div>
+            `;
         }
 
         function loadReport(url) {
@@ -188,4 +205,6 @@
         }
     </script>
 </body>
+</html>
+
 </html>
