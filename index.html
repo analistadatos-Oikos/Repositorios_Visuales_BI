@@ -213,7 +213,7 @@
 
     <script>
         // ANTI-INSPECCIÓN: Redirigir silenciosamente si detecta DevTools
-        const REDIRECT_URL = "https://bagumedios.com/servicios/marketingDigital?utm_source=google&utm_medium=paid&utm_campaign=clientes_potenciales&utm_id=21710584769&utm_term=gestionrrss&otro_parametro=&utm_campaign=21710584769&utm_term=agencia%20de%20seo&utm_source=google&utm_medium=ppc&hsa_acc=2386626797&hsa_cam=21710584769&hsa_grp=174982771854&hsa_ad=738139763886&hsa_src=g&hsa_tgt=kwd-3737189265&hsa_kw=agencia%20de%20seo&hsa_mt=b&hsa_net=adwords&hsa_ver=3&gad_source=1&gad_campaignid=21710584769&gbraid=0AAAAAp1Kgvpz-88vMXV2kROJ0TtdVzpNX&gclid=CjwKCAiAncvMBhBEEiwA9GU_flon6w3wiRBvPHiIv4qhC8yVTg_BKRgxUSJwGGPGBVunIln140qGEBoCA9oQAvD_BwE";
+        const REDIRECT_URL = "https://www.grupooikos.com/";
 
         // Deshabilitar consola completamente
         (function() {
@@ -246,13 +246,7 @@
             }
         }, 1000);
 
-        // Método 3: Detectar click derecho
-        document.addEventListener('contextmenu', (e) => {
-            e.preventDefault();
-            window.location.replace(REDIRECT_URL);
-        });
-
-        // Método 4: Detectar atajos de teclado
+        // Método 4: Detectar SOLO atajos de teclado peligrosos (F12, etc.)
         document.addEventListener('keydown', (e) => {
             if (
                 e.key === 'F12' || 
@@ -399,5 +393,3 @@
     </script>
 </body>
 </html>
-
-
