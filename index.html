@@ -77,6 +77,7 @@
         .welcome-section h1 { font-family: 'Outfit', sans-serif; font-size: 44px; margin-bottom: 20px; }
         .welcome-section p { font-size: 15px; opacity: 0.8; line-height: 1.6; max-width: 280px; }
 
+        /* BI CONTAINER */
         #bi-container { 
             display: none; 
             position: fixed; 
@@ -86,6 +87,7 @@
             background: white; 
         }
 
+        /* HOME BUTTON */
         #btn-home {
             position: absolute;
             bottom: 2px;
@@ -113,12 +115,83 @@
             transform: translateY(-2px);
             box-shadow: 0 5px 14px rgba(0, 74, 153, 0.6);
         }
-        #btn-home svg {
-            width: 17px;
-            height: 17px;
-            fill: white;
+        #btn-home svg { width: 17px; height: 17px; fill: white; }
+
+        /* PDF BUTTON - CAMUFLADO, aparece solo al hover */
+        #btn-pdf {
+            position: absolute;
+            top: 12px;
+            left: 12px;
+            z-index: 100001;
+            padding: 10px 16px;
+            background: rgba(220, 38, 38, 0.92);
+            color: white;
+            border: none;
+            border-radius: 9px;
+            font-weight: 700;
+            font-family: 'Outfit', sans-serif;
+            cursor: pointer;
+            font-size: 12px;
+            display: flex;
+            align-items: center;
+            gap: 7px;
+            backdrop-filter: blur(8px);
+            box-shadow: 0 4px 15px rgba(220, 38, 38, 0.35);
+            /* CAMUFLADO: invisible por defecto */
+            opacity: 0;
+            pointer-events: none;
+            transform: translateY(-6px);
+            transition: opacity 0.35s ease, transform 0.35s ease;
+        }
+        #btn-pdf svg { width: 15px; height: 15px; fill: white; flex-shrink: 0; }
+        #btn-pdf.visible {
+            opacity: 1;
+            pointer-events: auto;
+            transform: translateY(0);
+        }
+        #btn-pdf:hover {
+            background: rgba(185, 28, 28, 0.97);
+            box-shadow: 0 6px 20px rgba(220, 38, 38, 0.5);
         }
 
+        /* Zona de detección de hover (cubre toda la esquina superior izquierda) */
+        #pdf-hover-zone {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 200px;
+            height: 80px;
+            z-index: 100000;
+            background: transparent;
+        }
+
+        /* Estado del PDF button mientras descarga */
+        #btn-pdf.loading {
+            background: rgba(100, 116, 139, 0.9);
+            cursor: wait;
+            pointer-events: none;
+        }
+
+        #shield-top-right { 
+            position: absolute;
+            top: 0; 
+            right: 0; 
+            width: 180px; 
+            height: 55px;
+            z-index: 100000;
+            background: rgba(255, 255, 255, 0.01);
+            cursor: pointer;
+        } 
+        #shield-bottom-right { 
+            position: absolute;
+            bottom: 0; 
+            right: 0; 
+            width: 440px; 
+            height: 42px;
+            z-index: 100000;
+            background: rgba(255, 255, 255, 0.01);
+            cursor: pointer;
+        }
         #shield-home-extra {
             position: absolute;
             bottom: 0;
@@ -130,43 +203,14 @@
             cursor: pointer;
         }
 
-        @media (max-width: 768px) {
-            .btn-logout {
-                font-size: 11px;
-                padding: 8px 16px;
-            }
-            #btn-home {
-                padding: 8px 12px;
-                font-size: 12px;
-                width: 150px;
-            }
-            #btn-home svg {
-                width: 15px;
-                height: 15px;
-            }
-        }
-
-        .shield { 
-            position: absolute; 
-            z-index: 100000; 
-            background: rgba(255, 255, 255, 0.01); 
-            cursor: pointer; 
-        }
-        #shield-top-right { 
-            top: 0; 
-            right: 0; 
-            width: 180px; 
-            height: 55px; 
-        } 
-        #shield-bottom-right { 
-            bottom: 0; 
-            right: 0; 
-            width: 440px; 
-            height: 42px; 
-        }
-
         iframe { width: 100%; height: 100%; border: none; display: block; }
         #status-msg { margin-top: 15px; font-size: 12px; text-align: center; font-weight: 600; }
+
+        @media (max-width: 768px) {
+            .btn-logout { font-size: 11px; padding: 8px 16px; }
+            #btn-home { padding: 8px 12px; font-size: 12px; width: 150px; }
+            #btn-pdf { font-size: 11px; padding: 8px 12px; }
+        }
     </style>
 </head>
 <body>
@@ -199,33 +243,63 @@
     </div>
 
     <div id="bi-container">
+        <!-- Botón PDF camuflado (esquina superior izquierda) -->
+        <div id="pdf-hover-zone"></div>
+        <button id="btn-pdf" onclick="descargarPDF()">
+            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path d="M20 2H8c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-8.5 7.5c0 .83-.67 1.5-1.5 1.5H9v2H7.5V7H10c.83 0 1.5.67 1.5 1.5v1zm5 2c0 .83-.67 1.5-1.5 1.5h-2.5V7H15c.83 0 1.5.67 1.5 1.5v3zm4-3H19v1h1.5V11H19v2h-1.5V7h3v1.5zM9 9.5h1v-1H9v1zM4 6H2v14c0 1.1.9 2 2 2h14v-2H4V6zm10 5.5h1v-3h-1v3z"/>
+            </svg>
+            Descargar PDF
+        </button>
+
+        <!-- Botón HOME -->
         <button id="btn-home" onclick="volverHome()">
             <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                 <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/>
             </svg>
             HOME
         </button>
-        <div id="shield-top-right" class="shield" onclick="securityReset()"></div>
-        <div id="shield-bottom-right" class="shield" onclick="securityReset()"></div>
-        <div id="shield-home-extra" class="shield" onclick="securityReset()"></div>
+
+        <!-- Shields de seguridad -->
+        <div id="shield-top-right" onclick="securityReset()"></div>
+        <div id="shield-bottom-right" onclick="securityReset()"></div>
+        <div id="shield-home-extra" onclick="securityReset()"></div>
+
         <iframe id="bi-frame" src=""></iframe>
     </div>
 
     <script>
-        // ANTI-INSPECCIÓN: Redirigir silenciosamente si detecta DevTools
+        // ============================================================
+        // CONFIGURACIÓN DE CARPETAS PDF POR REPORTE
+        // Mapea el nombre del reporte (tal como viene del Sheet "Link Bi")
+        // con el ID de la carpeta de Drive correspondiente
+        // ============================================================
+        const PDF_FOLDER_MAP = {
+            // Ajusta estas keys al NOMBRE EXACTO de tus reportes en la hoja "Link Bi"
+            "OIKOS":       "18Bxx_ggnhur63fJlT7_cNGYUti2luXSW",
+            "CALEDONIA":   "1Men8Pc2AjPWSPdGX920GSP5jUJ87Pwm-"
+        };
+
+        // ID de tu Apps Script principal (el que tiene action=getPdf)
+        const API_URL = "https://script.google.com/macros/s/AKfycbzuYa205ymAfNU8Ysz2mJlC8u24POoHZMu2XJmxYe76W6J-sVTOL6jfsWUzt5b-3iD5nQ/exec";
+        const REPO_URL = "https://analistadatos-oikos.github.io/Repositorios_Visuales_BI/";
+        const SESSION_DURATION = 43200000;
         const REDIRECT_URL = "https://www.grupooikos.com/";
 
-        // Deshabilitar consola completamente
+        // Reporte activo actualmente en el iframe
+        let reporteActivo = null;
+
+        // ============================================================
+        // ANTI-INSPECCIÓN
+        // ============================================================
         (function() {
             const noop = () => {};
             const methods = ['log', 'debug', 'info', 'warn', 'error', 'dir', 'dirxml', 'trace', 'profile', 'profileEnd', 'table', 'clear'];
             methods.forEach(method => { console[method] = noop; });
         })();
 
-        // Detectar DevTools abierto - Múltiples métodos
         let devtoolsDetected = false;
 
-        // Método 1: Detectar por tamaño de ventana
         setInterval(() => {
             const widthThreshold = window.outerWidth - window.innerWidth > 160;
             const heightThreshold = window.outerHeight - window.innerHeight > 160;
@@ -235,7 +309,6 @@
             }
         }, 500);
 
-        // Método 2: Detectar con debugger
         setInterval(() => {
             const start = new Date().getTime();
             debugger;
@@ -246,7 +319,6 @@
             }
         }, 1000);
 
-        // Método 4: Detectar SOLO atajos de teclado peligrosos (F12, etc.)
         document.addEventListener('keydown', (e) => {
             if (
                 e.key === 'F12' || 
@@ -260,10 +332,106 @@
             }
         });
 
-        const API_URL = "https://script.google.com/macros/s/AKfycbxSGzS10IPvkPYvBaFwnrZ3EnCxAld__cxjzjHP6-8q31BFrE5oXVR3HMlI4MeQ4dadDw/exec";
-        const REPO_URL = "https://analistadatos-oikos.github.io/Repositorios_Visuales_BI/";
-        const SESSION_DURATION = 43200000;
+        // ============================================================
+        // LÓGICA DEL BOTÓN PDF - HOVER ZONE
+        // ============================================================
+        const pdfHoverZone = document.getElementById('pdf-hover-zone');
+        const btnPdf = document.getElementById('btn-pdf');
+        let hideTimeout = null;
 
+        function mostrarPdfBtn() {
+            clearTimeout(hideTimeout);
+            btnPdf.classList.add('visible');
+        }
+
+        function ocultarPdfBtn() {
+            hideTimeout = setTimeout(() => {
+                if (!btnPdf.matches(':hover')) {
+                    btnPdf.classList.remove('visible');
+                }
+            }, 600);
+        }
+
+        pdfHoverZone.addEventListener('mouseenter', mostrarPdfBtn);
+        pdfHoverZone.addEventListener('mouseleave', ocultarPdfBtn);
+        btnPdf.addEventListener('mouseenter', mostrarPdfBtn);
+        btnPdf.addEventListener('mouseleave', ocultarPdfBtn);
+
+        // ============================================================
+        // DESCARGA DE PDF
+        // ============================================================
+        async function descargarPDF() {
+            if (!reporteActivo) return;
+
+            // Buscar el folder ID según el reporte activo
+            // Busca por coincidencia parcial (mayúsculas) para ser flexible
+            const nombreUpper = reporteActivo.toUpperCase();
+            let folderId = null;
+
+            for (const key of Object.keys(PDF_FOLDER_MAP)) {
+                if (nombreUpper.includes(key)) {
+                    folderId = PDF_FOLDER_MAP[key];
+                    break;
+                }
+            }
+
+            if (!folderId) {
+                alert("No se encontró PDF para este reporte.");
+                return;
+            }
+
+            // Mostrar estado de carga
+            btnPdf.classList.add('loading');
+            btnPdf.innerHTML = `
+                <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" style="animation: spin 1s linear infinite;">
+                    <path d="M12 4V2A10 10 0 0 0 2 12h2a8 8 0 0 1 8-8z"/>
+                </svg>
+                Descargando...
+            `;
+
+            // Agregar animación spin inline
+            if (!document.getElementById('spin-style')) {
+                const style = document.createElement('style');
+                style.id = 'spin-style';
+                style.textContent = '@keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }';
+                document.head.appendChild(style);
+            }
+
+            try {
+                const res = await fetch(`${API_URL}?action=getPdf&folderId=${encodeURIComponent(folderId)}`);
+                const data = await res.json();
+
+                if (data.status === 'success' && data.downloadUrl) {
+                    // Descarga directa usando un <a> temporal
+                    const link = document.createElement('a');
+                    link.href = data.downloadUrl;
+                    link.download = data.fileName || 'reporte.pdf';
+                    link.target = '_blank';
+                    document.body.appendChild(link);
+                    link.click();
+                    document.body.removeChild(link);
+                } else {
+                    alert(data.message || "No se pudo obtener el PDF.");
+                }
+            } catch (err) {
+                alert("Error al conectar con el servidor de archivos.");
+            }
+
+            // Restaurar botón
+            setTimeout(() => {
+                btnPdf.classList.remove('loading');
+                btnPdf.innerHTML = `
+                    <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M20 2H8c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-8.5 7.5c0 .83-.67 1.5-1.5 1.5H9v2H7.5V7H10c.83 0 1.5.67 1.5 1.5v1zm5 2c0 .83-.67 1.5-1.5 1.5h-2.5V7H15c.83 0 1.5.67 1.5 1.5v3zm4-3H19v1h1.5V11H19v2h-1.5V7h3v1.5zM9 9.5h1v-1H9v1zM4 6H2v14c0 1.1.9 2 2 2h14v-2H4V6zm10 5.5h1v-3h-1v3z"/>
+                    </svg>
+                    Descargar PDF
+                `;
+            }, 2000);
+        }
+
+        // ============================================================
+        // AUTENTICACIÓN Y SESIÓN
+        // ============================================================
         function encodeUrl(url) {
             let step1 = btoa(url);
             let step2 = step1.split('').reverse().join('');
@@ -291,11 +459,9 @@
         function salidaSegura() {
             localStorage.clear();
             sessionStorage.clear();
-            
             document.cookie.split(";").forEach(function(c) { 
                 document.cookie = c.replace(/^ +/, "").replace(/=.*/, "=;expires=" + new Date().toUTCString() + ";path=/"); 
             });
-
             window.location.href = window.location.href.split('?')[0] + '?t=' + new Date().getTime();
         }
 
@@ -303,6 +469,7 @@
             document.getElementById('bi-container').style.display = 'none';
             document.getElementById('bi-frame').src = '';
             document.getElementById('login-ui').style.display = 'flex';
+            reporteActivo = null;
             
             const savedSession = JSON.parse(localStorage.getItem('oikos_auth_token'));
             if(savedSession && savedSession.reportes.length > 1) {
@@ -346,7 +513,6 @@
                         nombre: r.nombre,
                         url: encodeUrl(r.url)
                     }));
-                    
                     localStorage.setItem('oikos_auth_token', JSON.stringify({
                         time: new Date().getTime(),
                         reportes: reportesOfuscados
@@ -358,7 +524,7 @@
 
         function showReportSelector(reportes) {
             if(reportes.length === 1) {
-                loadReport(reportes[0].url);
+                loadReport(reportes[0].url, reportes[0].nombre);
                 return;
             }
 
@@ -369,7 +535,8 @@
                     <p class="instruction">Elige el dashboard que deseas visualizar</p>
                     <div id="buttons-container" style="display: flex; flex-direction: column; margin-top: 30px;">
                         ${reportes.map((r, idx) => `
-                            <button class="main-button ${idx === 1 ? 'caledonia' : ''}" onclick="loadReport('${r.url}')">
+                            <button class="main-button ${idx === 1 ? 'caledonia' : ''}" 
+                                    onclick="loadReport('${r.url}', '${r.nombre}')">
                                 ${r.nombre}
                             </button>
                         `).join('')}
@@ -384,8 +551,9 @@
             document.getElementById('login-ui').style.display = 'flex';
         }
 
-        function loadReport(encodedUrl) {
+        function loadReport(encodedUrl, nombre) {
             const realUrl = decodeUrl(encodedUrl);
+            reporteActivo = nombre || '';  // Guardar qué reporte está activo
             document.getElementById('login-ui').style.display = 'none';
             document.getElementById('bi-container').style.display = 'block';
             document.getElementById('bi-frame').src = realUrl;
