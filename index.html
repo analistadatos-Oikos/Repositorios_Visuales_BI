@@ -117,12 +117,12 @@
         }
         #btn-home svg { width: 17px; height: 17px; fill: white; }
 
-        /* PDF BUTTON - CAMUFLADO, aparece solo al hover */
+        /* PDF BUTTON - CAMUFLADO: casi invisible, se revela al hover */
         #btn-pdf {
             position: absolute;
             top: 12px;
             left: 12px;
-            z-index: 100001;
+            z-index: 100002;
             padding: 10px 16px;
             background: rgba(220, 38, 38, 0.92);
             color: white;
@@ -137,36 +137,23 @@
             gap: 7px;
             backdrop-filter: blur(8px);
             box-shadow: 0 4px 15px rgba(220, 38, 38, 0.35);
-            /* CAMUFLADO: invisible por defecto */
-            opacity: 0;
-            pointer-events: none;
-            transform: translateY(-6px);
-            transition: opacity 0.35s ease, transform 0.35s ease;
+            /* CAMUFLADO: casi invisible pero siempre interactuable */
+            opacity: 0.04;
+            pointer-events: auto;
+            transform: scale(0.92);
+            transition: opacity 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
         }
         #btn-pdf svg { width: 15px; height: 15px; fill: white; flex-shrink: 0; }
-        #btn-pdf.visible {
-            opacity: 1;
-            pointer-events: auto;
-            transform: translateY(0);
-        }
         #btn-pdf:hover {
+            opacity: 1;
+            transform: scale(1);
             background: rgba(185, 28, 28, 0.97);
-            box-shadow: 0 6px 20px rgba(220, 38, 38, 0.5);
-        }
-
-        /* Zona de detección de hover (cubre toda la esquina superior izquierda) */
-        #pdf-hover-zone {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 200px;
-            height: 80px;
-            z-index: 100000;
-            background: transparent;
+            box-shadow: 0 6px 20px rgba(220, 38, 38, 0.6);
         }
 
         /* Estado del PDF button mientras descarga */
         #btn-pdf.loading {
+            opacity: 0.6;
             background: rgba(100, 116, 139, 0.9);
             cursor: wait;
             pointer-events: none;
@@ -243,8 +230,7 @@
     </div>
 
     <div id="bi-container">
-        <!-- Botón PDF camuflado (esquina superior izquierda) -->
-        <div id="pdf-hover-zone"></div>
+        <!-- Botón PDF camuflado (esquina superior izquierda, hover para revelar) -->
         <button id="btn-pdf" onclick="descargarPDF()">
             <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                 <path d="M20 2H8c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-8.5 7.5c0 .83-.67 1.5-1.5 1.5H9v2H7.5V7H10c.83 0 1.5.67 1.5 1.5v1zm5 2c0 .83-.67 1.5-1.5 1.5h-2.5V7H15c.83 0 1.5.67 1.5 1.5v3zm4-3H19v1h1.5V11H19v2h-1.5V7h3v1.5zM9 9.5h1v-1H9v1zM4 6H2v14c0 1.1.9 2 2 2h14v-2H4V6zm10 5.5h1v-3h-1v3z"/>
@@ -281,7 +267,7 @@
         };
 
         // ID de tu Apps Script principal (el que tiene action=getPdf)
-        const API_URL = "https://script.google.com/macros/s/AKfycbzuYa205ymAfNU8Ysz2mJlC8u24POoHZMu2XJmxYe76W6J-sVTOL6jfsWUzt5b-3iD5nQ/exec";
+        const API_URL = "https://script.google.com/macros/s/AKfycbxSGzS10IPvkPYvBaFwnrZ3EnCxAld__cxjzjHP6-8q31BFrE5oXVR3HMlI4MeQ4dadDw/exec";
         const REPO_URL = "https://analistadatos-oikos.github.io/Repositorios_Visuales_BI/";
         const SESSION_DURATION = 43200000;
         const REDIRECT_URL = "https://www.grupooikos.com/";
@@ -331,31 +317,6 @@
                 window.location.replace(REDIRECT_URL);
             }
         });
-
-        // ============================================================
-        // LÓGICA DEL BOTÓN PDF - HOVER ZONE
-        // ============================================================
-        const pdfHoverZone = document.getElementById('pdf-hover-zone');
-        const btnPdf = document.getElementById('btn-pdf');
-        let hideTimeout = null;
-
-        function mostrarPdfBtn() {
-            clearTimeout(hideTimeout);
-            btnPdf.classList.add('visible');
-        }
-
-        function ocultarPdfBtn() {
-            hideTimeout = setTimeout(() => {
-                if (!btnPdf.matches(':hover')) {
-                    btnPdf.classList.remove('visible');
-                }
-            }, 600);
-        }
-
-        pdfHoverZone.addEventListener('mouseenter', mostrarPdfBtn);
-        pdfHoverZone.addEventListener('mouseleave', ocultarPdfBtn);
-        btnPdf.addEventListener('mouseenter', mostrarPdfBtn);
-        btnPdf.addEventListener('mouseleave', ocultarPdfBtn);
 
         // ============================================================
         // DESCARGA DE PDF
