@@ -10,30 +10,37 @@
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@600;800&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        :root { --primary-blue: #004a99; --deep-blue: #003366; --accent-cyan: #00d2ff; --text-gray: #64748b; --caledonia-red: #9C182F; }
-        
-        body, html { 
-            font-family: 'DM Sans', sans-serif; 
-            background: linear-gradient(135deg, #f0f4ff 0%, #e8ecf9 100%); 
-            height: 100%; width: 100%; display: flex; align-items: center; justify-content: center; 
-            position: relative; overflow: hidden; 
+        :root {
+            --primary-blue: #004a99;
+            --deep-blue: #003366;
+            --accent-cyan: #00d2ff;
+            --text-gray: #64748b;
+            --caledonia-red: #9C182F;
+        }
+
+        body, html {
+            font-family: 'DM Sans', sans-serif;
+            background: linear-gradient(135deg, #f0f4ff 0%, #e8ecf9 100%);
+            height: 100%; width: 100%;
+            display: flex; align-items: center; justify-content: center;
+            position: relative; overflow: hidden;
         }
 
         .circle-decoration { position: absolute; border-radius: 50%; opacity: 0.15; z-index: 0; filter: blur(50px); }
         .c1 { width: 300px; height: 300px; background: var(--primary-blue); top: -100px; left: -100px; animation: float 10s infinite; }
         .c2 { width: 400px; height: 400px; background: var(--accent-cyan); bottom: -150px; right: -150px; animation: float 12s infinite reverse; }
-        @keyframes float { 0%, 100% { transform: translate(0,0); } 50% { transform: translate(20px, 20px); } }
+        @keyframes float { 0%, 100% { transform: translate(0,0); } 50% { transform: translate(20px,20px); } }
 
-        .container { 
-            display: flex; background: white; border-radius: 28px; 
-            box-shadow: 0 40px 100px rgba(0, 0, 0, 0.1); 
+        .container {
+            display: flex; background: white; border-radius: 28px;
+            box-shadow: 0 40px 100px rgba(0,0,0,0.1);
             max-width: 1000px; width: 92%; min-height: 600px;
             position: relative; z-index: 1; overflow: hidden;
             animation: slideUp 0.8s ease-out;
         }
         @keyframes slideUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
 
-        .login-section { flex: 1.2; padding: 50px 60px; display: flex; flex-direction: column; justify-content: center; position: relative; }
+        .login-section { flex: 1.2; padding: 50px 60px; display: flex; flex-direction: column; justify-content: center; }
         .brand-name { font-family: 'Outfit', sans-serif; font-size: 32px; font-weight: 800; color: var(--primary-blue); margin-bottom: 40px; letter-spacing: -1px; }
         h2 { font-family: 'Outfit', sans-serif; font-size: 26px; color: #1e293b; margin-bottom: 12px; }
         .instruction { font-size: 13px; color: var(--text-gray); margin-bottom: 25px; line-height: 1.5; }
@@ -44,159 +51,145 @@
         .btn-request { width: 100%; padding: 12px; background: white; color: var(--primary-blue); border: 2px solid var(--primary-blue); border-radius: 12px; font-weight: 700; cursor: pointer; margin-bottom: 15px; font-size: 12px; transition: 0.3s; }
         .btn-request:hover { background: #f0f7ff; }
 
-        .main-button { width: 100%; padding: 18px; background: var(--primary-blue); color: white; border: none; border-radius: 14px; font-weight: 700; font-family: 'Outfit', sans-serif; cursor: pointer; transition: 0.3s; box-shadow: 0 10px 25px rgba(0, 74, 153, 0.2); margin-bottom: 12px; }
+        .main-button { width: 100%; padding: 18px; background: var(--primary-blue); color: white; border: none; border-radius: 14px; font-weight: 700; font-family: 'Outfit', sans-serif; cursor: pointer; transition: 0.3s; box-shadow: 0 10px 25px rgba(0,74,153,0.2); margin-bottom: 12px; }
         .main-button:hover { background: var(--deep-blue); transform: translateY(-2px); }
-
-        .main-button.caledonia { background: var(--caledonia-red); box-shadow: 0 10px 25px rgba(156, 24, 47, 0.2); }
+        .main-button.caledonia { background: var(--caledonia-red); box-shadow: 0 10px 25px rgba(156,24,47,0.2); }
         .main-button.caledonia:hover { background: #7a1325; }
 
-        .btn-logout {
-            width: 100%;
-            padding: 10px 20px;
-            background: white;
-            color: #64748b;
-            border: 2px solid #e2e8f0;
-            border-radius: 10px;
-            font-weight: 600;
-            font-family: 'Outfit', sans-serif;
-            cursor: pointer;
-            transition: 0.3s;
-            font-size: 12px;
-            margin-top: 20px;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-        }
-        .btn-logout:hover {
-            background: #fef2f2;
-            border-color: #fecaca;
-            color: #dc2626;
-            transform: translateY(-1px);
-            box-shadow: 0 4px 12px rgba(220, 38, 38, 0.15);
-        }
+        .btn-logout { width: 100%; padding: 10px 20px; background: white; color: #64748b; border: 2px solid #e2e8f0; border-radius: 10px; font-weight: 600; font-family: 'Outfit', sans-serif; cursor: pointer; transition: 0.3s; font-size: 12px; margin-top: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
+        .btn-logout:hover { background: #fef2f2; border-color: #fecaca; color: #dc2626; transform: translateY(-1px); }
 
         .welcome-section { flex: 1; background: linear-gradient(150deg, var(--primary-blue) 0%, var(--deep-blue) 100%); padding: 60px; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; color: white; }
         .welcome-section h1 { font-family: 'Outfit', sans-serif; font-size: 44px; margin-bottom: 20px; }
         .welcome-section p { font-size: 15px; opacity: 0.8; line-height: 1.6; max-width: 280px; }
 
-        /* BI CONTAINER */
-        #bi-container { 
-            display: none; 
-            position: fixed; 
-            top: 0; left: 0; 
-            width: 100vw; height: 100vh; 
-            z-index: 99999; 
-            background: white; 
-        }
-
-        /* HOME BUTTON */
-        #btn-home {
-            position: absolute;
-            bottom: 2px;
-            right: 2px;
-            z-index: 100001;
-            padding: 9px 15px;
-            background: var(--primary-blue);
-            color: white;
-            border: none;
-            border-radius: 7px;
-            font-weight: 700;
-            font-family: 'Outfit', sans-serif;
-            cursor: pointer;
-            transition: 0.3s;
-            box-shadow: 0 3px 10px rgba(0, 74, 153, 0.5);
-            font-size: 13px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 7px;
-            width: 180px;
-        }
-        #btn-home:hover {
-            background: var(--deep-blue);
-            transform: translateY(-2px);
-            box-shadow: 0 5px 14px rgba(0, 74, 153, 0.6);
-        }
-        #btn-home svg { width: 17px; height: 17px; fill: white; }
-
-        /* PDF BUTTON - CAMUFLADO: casi invisible, se revela al hover */
-        #btn-pdf {
-            position: absolute;
-            top: 12px;
-            left: 12px;
-            z-index: 100002;
-            padding: 10px 16px;
-            background: rgba(220, 38, 38, 0.92);
-            color: white;
-            border: none;
-            border-radius: 9px;
-            font-weight: 700;
-            font-family: 'Outfit', sans-serif;
-            cursor: pointer;
-            font-size: 12px;
-            display: flex;
-            align-items: center;
-            gap: 7px;
-            backdrop-filter: blur(8px);
-            box-shadow: 0 4px 15px rgba(220, 38, 38, 0.35);
-            /* CAMUFLADO: casi invisible pero siempre interactuable */
-            opacity: 0.04;
-            pointer-events: auto;
-            transform: scale(0.92);
-            transition: opacity 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
-        }
-        #btn-pdf svg { width: 15px; height: 15px; fill: white; flex-shrink: 0; }
-        #btn-pdf:hover {
-            opacity: 1;
-            transform: scale(1);
-            background: rgba(185, 28, 28, 0.97);
-            box-shadow: 0 6px 20px rgba(220, 38, 38, 0.6);
-        }
-
-        /* Estado del PDF button mientras descarga */
-        #btn-pdf.loading {
-            opacity: 0.6;
-            background: rgba(100, 116, 139, 0.9);
-            cursor: wait;
-            pointer-events: none;
-        }
-
-        #shield-top-right { 
-            position: absolute;
-            top: 0; 
-            right: 0; 
-            width: 180px; 
-            height: 55px;
-            z-index: 100000;
-            background: rgba(255, 255, 255, 0.01);
-            cursor: pointer;
-        } 
-        #shield-bottom-right { 
-            position: absolute;
-            bottom: 0; 
-            right: 0; 
-            width: 440px; 
-            height: 42px;
-            z-index: 100000;
-            background: rgba(255, 255, 255, 0.01);
-            cursor: pointer;
-        }
-        #shield-home-extra {
-            position: absolute;
-            bottom: 0;
-            right: 185px;
-            width: 250px;
-            height: 38px;
-            z-index: 100000;
-            background: rgba(255, 255, 255, 0.01);
-            cursor: pointer;
+        /* ======================================================
+           BI CONTAINER
+        ====================================================== */
+        #bi-container {
+            display: none;
+            position: fixed;
+            top: 0; left: 0;
+            width: 100vw; height: 100vh;
+            z-index: 99999;
+            background: white;
         }
 
         iframe { width: 100%; height: 100%; border: none; display: block; }
+
+        /* ======================================================
+           SHIELDS DE SEGURIDAD
+        ====================================================== */
+        .shield {
+            position: absolute;
+            z-index: 100002;
+            background: rgba(255,255,255,0.01);
+            cursor: pointer;
+        }
+        #shield-top-right  { top: 0;    right: 0;   width: 180px; height: 55px; }
+        #shield-bottom-right { bottom: 0; right: 0; width: 440px; height: 50px; }
+
+        /* ======================================================
+           MENÚ FLOTANTE INFERIOR — se despliega hacia arriba
+        ====================================================== */
+        #floating-menu {
+            position: absolute;
+            bottom: 10px;
+            right: 10px;
+            z-index: 100003;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            gap: 8px;
+        }
+
+        /* Panel de opciones (HOME + PDF) — oculto por defecto */
+        #menu-panel {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            /* Glassmorphism */
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(16px) saturate(180%);
+            -webkit-backdrop-filter: blur(16px) saturate(180%);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 16px;
+            padding: 12px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.25);
+            /* Animación de entrada/salida */
+            opacity: 0;
+            transform: translateY(10px) scale(0.96);
+            pointer-events: none;
+            transition: opacity 0.25s ease, transform 0.25s ease;
+        }
+        #menu-panel.open {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+            pointer-events: auto;
+        }
+
+        /* Botón hamburguesa / toggle */
+        #menu-toggle {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: rgba(0, 74, 153, 0.88);
+            backdrop-filter: blur(10px);
+            border: 1.5px solid rgba(255,255,255,0.3);
+            color: white;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 16px rgba(0,74,153,0.5);
+            transition: background 0.2s, transform 0.2s;
+            flex-shrink: 0;
+        }
+        #menu-toggle:hover { background: rgba(0,51,102,0.95); transform: scale(1.07); }
+        #menu-toggle svg { width: 20px; height: 20px; fill: white; transition: transform 0.3s; }
+        #menu-toggle.open svg { transform: rotate(45deg); }
+
+        /* Botones dentro del panel */
+        .menu-btn {
+            display: flex;
+            align-items: center;
+            gap: 9px;
+            padding: 10px 16px;
+            border: none;
+            border-radius: 11px;
+            font-family: 'Outfit', sans-serif;
+            font-weight: 700;
+            font-size: 13px;
+            cursor: pointer;
+            white-space: nowrap;
+            transition: background 0.2s, transform 0.15s, box-shadow 0.2s;
+            color: white;
+            width: 100%;
+            justify-content: flex-start;
+        }
+        .menu-btn svg { width: 17px; height: 17px; fill: white; flex-shrink: 0; }
+
+        /* HOME */
+        #btn-home {
+            background: rgba(0, 74, 153, 0.82);
+            box-shadow: 0 3px 10px rgba(0,74,153,0.35);
+        }
+        #btn-home:hover { background: rgba(0,51,102,0.95); transform: translateX(-2px); box-shadow: 0 5px 14px rgba(0,74,153,0.5); }
+
+        /* PDF */
+        #btn-pdf {
+            background: rgba(185, 28, 28, 0.85);
+            box-shadow: 0 3px 10px rgba(185,28,28,0.35);
+        }
+        #btn-pdf:hover { background: rgba(153,18,18,0.97); transform: translateX(-2px); box-shadow: 0 5px 14px rgba(185,28,28,0.5); }
+        #btn-pdf:disabled { background: rgba(100,116,139,0.7); cursor: wait; }
+
         #status-msg { margin-top: 15px; font-size: 12px; text-align: center; font-weight: 600; }
 
+        @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+
         @media (max-width: 768px) {
-            .btn-logout { font-size: 11px; padding: 8px 16px; }
-            #btn-home { padding: 8px 12px; font-size: 12px; width: 150px; }
-            #btn-pdf { font-size: 11px; padding: 8px 12px; }
+            .menu-btn { font-size: 12px; padding: 9px 13px; }
         }
     </style>
 </head>
@@ -204,22 +197,19 @@
     <div class="circle-decoration c1"></div>
     <div class="circle-decoration c2"></div>
 
+    <!-- LOGIN UI -->
     <div class="container" id="login-ui">
         <div class="login-section">
             <div class="brand-name">OIKOS</div>
             <h2>Acceso al Portal</h2>
             <p class="instruction">Introduce tu correo y clave. Si ya ingresaste hoy, tu sesión estará activa por 12 horas.</p>
-            
             <div class="input-wrapper">
                 <input type="email" id="email" placeholder="ejemplo@oikos.com.co" spellcheck="false">
             </div>
-            
             <button class="btn-request" onclick="requestToken()">VALIDAR USUARIO</button>
-
             <div class="input-wrapper">
                 <input type="text" id="token" placeholder="Clave Alfanumérica" maxlength="6">
             </div>
-            
             <button class="main-button" onclick="verifyToken()">INGRESAR AL SISTEMA</button>
             <div id="status-msg"></div>
         </div>
@@ -229,50 +219,53 @@
         </div>
     </div>
 
+    <!-- BI CONTAINER -->
     <div id="bi-container">
-        <!-- Botón PDF camuflado (esquina superior izquierda, hover para revelar) -->
-        <button id="btn-pdf" onclick="descargarPDF()">
-            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                <path d="M20 2H8c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-8.5 7.5c0 .83-.67 1.5-1.5 1.5H9v2H7.5V7H10c.83 0 1.5.67 1.5 1.5v1zm5 2c0 .83-.67 1.5-1.5 1.5h-2.5V7H15c.83 0 1.5.67 1.5 1.5v3zm4-3H19v1h1.5V11H19v2h-1.5V7h3v1.5zM9 9.5h1v-1H9v1zM4 6H2v14c0 1.1.9 2 2 2h14v-2H4V6zm10 5.5h1v-3h-1v3z"/>
-            </svg>
-            Descargar PDF
-        </button>
-
-        <!-- Botón HOME -->
-        <button id="btn-home" onclick="volverHome()">
-            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/>
-            </svg>
-            HOME
-        </button>
+        <iframe id="bi-frame" src=""></iframe>
 
         <!-- Shields de seguridad -->
-        <div id="shield-top-right" onclick="securityReset()"></div>
-        <div id="shield-bottom-right" onclick="securityReset()"></div>
-        <div id="shield-home-extra" onclick="securityReset()"></div>
+        <div id="shield-top-right"   class="shield" onclick="securityReset()"></div>
+        <div id="shield-bottom-right" class="shield" onclick="securityReset()"></div>
 
-        <iframe id="bi-frame" src=""></iframe>
+        <!-- MENÚ FLOTANTE INFERIOR -->
+        <div id="floating-menu">
+            <!-- Panel que se abre hacia arriba -->
+            <div id="menu-panel">
+                <!-- Botón PDF -->
+                <button class="menu-btn" id="btn-pdf" onclick="descargarPDF()">
+                    <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M20 2H8c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-8.5 7.5c0 .83-.67 1.5-1.5 1.5H9v2H7.5V7H10c.83 0 1.5.67 1.5 1.5v1zm5 2c0 .83-.67 1.5-1.5 1.5h-2.5V7H15c.83 0 1.5.67 1.5 1.5v3zm4-3H19v1h1.5V11H19v2h-1.5V7h3v1.5zM9 9.5h1v-1H9v1zM4 6H2v14c0 1.1.9 2 2 2h14v-2H4V6zm10 5.5h1v-3h-1v3z"/>
+                    </svg>
+                    Ver / Descargar PDF
+                </button>
+
+                <!-- Botón HOME -->
+                <button class="menu-btn" id="btn-home" onclick="volverHome()">
+                    <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/>
+                    </svg>
+                    Volver al Home
+                </button>
+            </div>
+
+            <!-- Botón toggle (hamburguesa) -->
+            <button id="menu-toggle" onclick="toggleMenu()">
+                <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M19 13H5v-2h14v2zm0-5H5V6h14v2zm0 10H5v-2h14v2z"/>
+                </svg>
+            </button>
+        </div>
     </div>
 
     <script>
         // ============================================================
-        // CONFIGURACIÓN DE CARPETAS PDF POR REPORTE
-        // Mapea el nombre del reporte (tal como viene del Sheet "Link Bi")
-        // con el ID de la carpeta de Drive correspondiente
+        // CONFIG
         // ============================================================
-        const PDF_FOLDER_MAP = {
-            // Ajusta estas keys al NOMBRE EXACTO de tus reportes en la hoja "Link Bi"
-            "OIKOS":       "18Bxx_ggnhur63fJlT7_cNGYUti2luXSW",
-            "CALEDONIA":   "1Men8Pc2AjPWSPdGX920GSP5jUJ87Pwm-"
-        };
-
-        // ID de tu Apps Script principal (el que tiene action=getPdf)
-        const API_URL = "https://script.google.com/macros/s/AKfycbxSGzS10IPvkPYvBaFwnrZ3EnCxAld__cxjzjHP6-8q31BFrE5oXVR3HMlI4MeQ4dadDw/exec";
-        const REPO_URL = "https://analistadatos-oikos.github.io/Repositorios_Visuales_BI/";
+        const API_URL = "https://script.google.com/macros/s/AKfycbxTHG7jpyMtV2J4-dIw_xxTkc2ll8fn_6b-hud5l6TGLgL6oZ86lLC79Q6mRqSedexyYA/exec";
         const SESSION_DURATION = 43200000;
         const REDIRECT_URL = "https://www.grupooikos.com/";
 
-        // Reporte activo actualmente en el iframe
+        // Reporte activo (guarda nombre + pdfUrl)
         let reporteActivo = null;
 
         // ============================================================
@@ -280,242 +273,195 @@
         // ============================================================
         (function() {
             const noop = () => {};
-            const methods = ['log', 'debug', 'info', 'warn', 'error', 'dir', 'dirxml', 'trace', 'profile', 'profileEnd', 'table', 'clear'];
-            methods.forEach(method => { console[method] = noop; });
+            ['log','debug','info','warn','error','dir','dirxml','trace','profile','profileEnd','table','clear']
+                .forEach(m => { console[m] = noop; });
         })();
 
         let devtoolsDetected = false;
-
         setInterval(() => {
-            const widthThreshold = window.outerWidth - window.innerWidth > 160;
-            const heightThreshold = window.outerHeight - window.innerHeight > 160;
-            if ((widthThreshold || heightThreshold) && !devtoolsDetected) {
-                devtoolsDetected = true;
-                window.location.replace(REDIRECT_URL);
+            if ((window.outerWidth - window.innerWidth > 160 || window.outerHeight - window.innerHeight > 160) && !devtoolsDetected) {
+                devtoolsDetected = true; window.location.replace(REDIRECT_URL);
             }
         }, 500);
-
         setInterval(() => {
-            const start = new Date().getTime();
-            debugger;
-            const end = new Date().getTime();
-            if (end - start > 100 && !devtoolsDetected) {
-                devtoolsDetected = true;
-                window.location.replace(REDIRECT_URL);
+            const s = new Date().getTime(); debugger; 
+            if (new Date().getTime() - s > 100 && !devtoolsDetected) {
+                devtoolsDetected = true; window.location.replace(REDIRECT_URL);
             }
         }, 1000);
-
-        document.addEventListener('keydown', (e) => {
-            if (
-                e.key === 'F12' || 
-                (e.ctrlKey && e.shiftKey && e.key === 'I') ||
-                (e.ctrlKey && e.shiftKey && e.key === 'C') ||
-                (e.ctrlKey && e.shiftKey && e.key === 'J') ||
-                (e.ctrlKey && e.key === 'U')
-            ) {
-                e.preventDefault();
-                window.location.replace(REDIRECT_URL);
+        document.addEventListener('keydown', e => {
+            if (e.key === 'F12' || (e.ctrlKey && e.shiftKey && ['I','C','J'].includes(e.key)) || (e.ctrlKey && e.key === 'U')) {
+                e.preventDefault(); window.location.replace(REDIRECT_URL);
             }
         });
 
         // ============================================================
-        // DESCARGA DE PDF
-        // IDs de fallback hardcodeados (último PDF conocido por carpeta)
-        // Cuando subas un nuevo PDF, el GS lo detecta automáticamente.
-        // Si el GS falla por CORS, usa estos IDs de respaldo.
+        // MENÚ FLOTANTE
         // ============================================================
-        const PDF_FALLBACK_IDS = {
-            "OIKOS":     null,                    // Aún no tienes PDF de OIKOS
-            "CALEDONIA": "1iYE1_nuBiAFpSGUBPW1tAXhOXsVdfaVf"
-        };
+        let menuOpen = false;
 
-        function abrirPdfDrive(fileId) {
-            // Abre en nueva pestaña como visor de Drive (no requiere descarga forzada)
-            // El usuario puede desde ahí descargar con el botón nativo de Drive
-            window.open(`https://drive.google.com/file/d/${fileId}/view`, '_blank');
+        function toggleMenu() {
+            menuOpen = !menuOpen;
+            document.getElementById('menu-panel').classList.toggle('open', menuOpen);
+            document.getElementById('menu-toggle').classList.toggle('open', menuOpen);
         }
 
-        async function descargarPDF() {
-            if (!reporteActivo) return;
-
-            const nombreUpper = reporteActivo.toUpperCase();
-            let folderId = null;
-            let fallbackId = null;
-
-            for (const key of Object.keys(PDF_FOLDER_MAP)) {
-                if (nombreUpper.includes(key)) {
-                    folderId = PDF_FOLDER_MAP[key];
-                    fallbackId = PDF_FALLBACK_IDS[key];
-                    break;
-                }
+        // Cerrar menú al hacer clic fuera
+        document.addEventListener('click', e => {
+            const fm = document.getElementById('floating-menu');
+            if (fm && !fm.contains(e.target) && menuOpen) {
+                menuOpen = false;
+                document.getElementById('menu-panel').classList.remove('open');
+                document.getElementById('menu-toggle').classList.remove('open');
             }
+        });
 
-            if (!folderId && !fallbackId) {
+        // ============================================================
+        // PDF — abre el link de la columna C directamente
+        // ============================================================
+        function descargarPDF() {
+            if (!reporteActivo || !reporteActivo.pdfUrl) {
                 alert("No hay PDF disponible para este reporte aún.");
                 return;
             }
 
-            // Estado de carga
-            const btnPdf = document.getElementById('btn-pdf');
-            const svgPdf = `<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M20 2H8c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-8.5 7.5c0 .83-.67 1.5-1.5 1.5H9v2H7.5V7H10c.83 0 1.5.67 1.5 1.5v1zm5 2c0 .83-.67 1.5-1.5 1.5h-2.5V7H15c.83 0 1.5.67 1.5 1.5v3zm4-3H19v1h1.5V11H19v2h-1.5V7h3v1.5zM9 9.5h1v-1H9v1zM4 6H2v14c0 1.1.9 2 2 2h14v-2H4V6zm10 5.5h1v-3h-1v3z"/></svg>`;
-            const svgSpin = `<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" style="animation:spin 1s linear infinite"><path d="M12 4V2A10 10 0 0 0 2 12h2a8 8 0 0 1 8-8z"/></svg>`;
+            const btn = document.getElementById('btn-pdf');
+            btn.disabled = true;
+            btn.innerHTML = `
+                <svg viewBox="0 0 24 24" style="animation:spin 1s linear infinite;width:17px;height:17px;fill:white">
+                    <path d="M12 4V2A10 10 0 0 0 2 12h2a8 8 0 0 1 8-8z"/>
+                </svg>
+                Abriendo...
+            `;
 
-            if (!document.getElementById('spin-style')) {
-                const s = document.createElement('style');
-                s.id = 'spin-style';
-                s.textContent = '@keyframes spin{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}';
-                document.head.appendChild(s);
-            }
+            // Abrir el link tal como viene del Sheet (puede ser link de Drive, URL directa, etc.)
+            window.open(reporteActivo.pdfUrl, '_blank');
 
-            btnPdf.classList.add('loading');
-            btnPdf.innerHTML = `${svgSpin} Buscando...`;
-
-            const restaurar = () => {
-                setTimeout(() => {
-                    btnPdf.classList.remove('loading');
-                    btnPdf.innerHTML = `${svgPdf} Descargar PDF`;
-                }, 1500);
-            };
-
-            // Intentar primero el GS dinámico
-            try {
-                const controller = new AbortController();
-                const timeout = setTimeout(() => controller.abort(), 5000); // 5s timeout
-
-                const res = await fetch(
-                    `${API_URL}?action=getPdf&folderId=${encodeURIComponent(folderId)}`,
-                    { signal: controller.signal }
-                );
-                clearTimeout(timeout);
-                const data = await res.json();
-
-                if (data.status === 'success' && data.fileId) {
-                    abrirPdfDrive(data.fileId);
-                    restaurar();
-                    return;
-                }
-            } catch (err) {
-                // GS falló (CORS o timeout) → usar fallback
-            }
-
-            // Fallback: usar ID hardcodeado
-            if (fallbackId) {
-                abrirPdfDrive(fallbackId);
-            } else {
-                alert("PDF no disponible aún para este reporte.");
-            }
-
-            restaurar();
+            setTimeout(() => {
+                btn.disabled = false;
+                btn.innerHTML = `
+                    <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M20 2H8c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-8.5 7.5c0 .83-.67 1.5-1.5 1.5H9v2H7.5V7H10c.83 0 1.5.67 1.5 1.5v1zm5 2c0 .83-.67 1.5-1.5 1.5h-2.5V7H15c.83 0 1.5.67 1.5 1.5v3zm4-3H19v1h1.5V11H19v2h-1.5V7h3v1.5zM9 9.5h1v-1H9v1zM4 6H2v14c0 1.1.9 2 2 2h14v-2H4V6zm10 5.5h1v-3h-1v3z"/>
+                    </svg>
+                    Ver / Descargar PDF
+                `;
+            }, 2000);
         }
 
         // ============================================================
-        // AUTENTICACIÓN Y SESIÓN
+        // NAVEGACIÓN
         // ============================================================
-        function encodeUrl(url) {
-            let step1 = btoa(url);
-            let step2 = step1.split('').reverse().join('');
-            let step3 = btoa(step2);
-            return step3;
-        }
-
-        function decodeUrl(encoded) {
-            let step1 = atob(encoded);
-            let step2 = step1.split('').reverse().join('');
-            let step3 = atob(step2);
-            return step3;
-        }
-
-        window.onload = () => {
-            const savedSession = JSON.parse(localStorage.getItem('oikos_auth_token'));
-            if(savedSession) {
-                const now = new Date().getTime();
-                if(now - savedSession.time < SESSION_DURATION) {
-                    showReportSelector(savedSession.reportes);
-                }
-            }
-        };
-
-        function salidaSegura() {
-            localStorage.clear();
-            sessionStorage.clear();
-            document.cookie.split(";").forEach(function(c) { 
-                document.cookie = c.replace(/^ +/, "").replace(/=.*/, "=;expires=" + new Date().toUTCString() + ";path=/"); 
-            });
-            window.location.href = window.location.href.split('?')[0] + '?t=' + new Date().getTime();
-        }
-
         function volverHome() {
             document.getElementById('bi-container').style.display = 'none';
             document.getElementById('bi-frame').src = '';
             document.getElementById('login-ui').style.display = 'flex';
             reporteActivo = null;
-            
+            menuOpen = false;
+            document.getElementById('menu-panel').classList.remove('open');
+            document.getElementById('menu-toggle').classList.remove('open');
+
             const savedSession = JSON.parse(localStorage.getItem('oikos_auth_token'));
-            if(savedSession && savedSession.reportes.length > 1) {
+            if (savedSession && savedSession.reportes && savedSession.reportes.length > 1) {
                 showReportSelector(savedSession.reportes);
             } else {
                 window.location.reload();
             }
         }
 
-        function securityReset() {
-            window.location.replace(REDIRECT_URL);
+        function securityReset() { window.location.replace(REDIRECT_URL); }
+
+        // ============================================================
+        // ENCODE / DECODE URL
+        // ============================================================
+        function encodeUrl(url) {
+            return btoa(btoa(url).split('').reverse().join(''));
+        }
+        function decodeUrl(encoded) {
+            return atob(atob(encoded).split('').reverse().join(''));
+        }
+
+        // ============================================================
+        // SESIÓN
+        // ============================================================
+        window.onload = () => {
+            const saved = JSON.parse(localStorage.getItem('oikos_auth_token'));
+            if (saved && (new Date().getTime() - saved.time < SESSION_DURATION)) {
+                showReportSelector(saved.reportes);
+            }
+        };
+
+        function salidaSegura() {
+            localStorage.clear(); sessionStorage.clear();
+            document.cookie.split(";").forEach(c => {
+                document.cookie = c.replace(/^ +/, "").replace(/=.*/, "=;expires=" + new Date().toUTCString() + ";path=/");
+            });
+            window.location.href = window.location.href.split('?')[0] + '?t=' + new Date().getTime();
         }
 
         function setStatus(m, c = "#64748b") {
             const el = document.getElementById('status-msg');
-            el.innerText = m; el.style.color = c;
+            if (el) { el.innerText = m; el.style.color = c; }
         }
 
+        // ============================================================
+        // AUTH
+        // ============================================================
         async function requestToken() {
             const mail = document.getElementById('email').value;
-            if(!mail.includes('@')) return setStatus("Correo no válido", "#ef4444");
+            if (!mail.includes('@')) return setStatus("Correo no válido", "#ef4444");
             setStatus("Enviando clave...", "#004a99");
             try {
                 const res = await fetch(`${API_URL}?action=solicitar&correo=${encodeURIComponent(mail)}`);
                 const data = await res.json();
-                if(data.status === 'sent') setStatus("¡Clave enviada! Válida por 12h.", "#10b981");
-                else setStatus(data.message, "#ef4444");
+                setStatus(data.status === 'sent' ? "¡Clave enviada! Válida por 12h." : data.message,
+                          data.status === 'sent' ? "#10b981" : "#ef4444");
             } catch(e) { setStatus("Error de red", "#ef4444"); }
         }
 
         async function verifyToken() {
             const mail = document.getElementById('email').value;
-            const tk = document.getElementById('token').value;
-            if(!mail || !tk) return setStatus("Completa los datos", "#ef4444");
+            const tk   = document.getElementById('token').value;
+            if (!mail || !tk) return setStatus("Completa los datos", "#ef4444");
             setStatus("Verificando acceso...", "#004a99");
             try {
-                const res = await fetch(`${API_URL}?action=validar&correo=${encodeURIComponent(mail)}&token=${encodeURIComponent(tk)}`);
+                const res  = await fetch(`${API_URL}?action=validar&correo=${encodeURIComponent(mail)}&token=${encodeURIComponent(tk)}`);
                 const data = await res.json();
-                if(data.status === 'success') {
+                if (data.status === 'success') {
+                    // Guardar reportes con pdfUrl incluido
                     const reportesOfuscados = data.reportes.map(r => ({
                         nombre: r.nombre,
-                        url: encodeUrl(r.url)
+                        url:    encodeUrl(r.url),
+                        pdfUrl: r.pdfUrl || null   // guardar tal cual, sin ofuscar
                     }));
                     localStorage.setItem('oikos_auth_token', JSON.stringify({
                         time: new Date().getTime(),
                         reportes: reportesOfuscados
                     }));
                     showReportSelector(reportesOfuscados);
-                } else setStatus(data.message, "#ef4444");
+                } else {
+                    setStatus(data.message, "#ef4444");
+                }
             } catch(e) { setStatus("Falla de validación", "#ef4444"); }
         }
 
+        // ============================================================
+        // SELECTOR DE REPORTES
+        // ============================================================
         function showReportSelector(reportes) {
-            if(reportes.length === 1) {
-                loadReport(reportes[0].url, reportes[0].nombre);
+            if (reportes.length === 1) {
+                loadReport(reportes[0]);
                 return;
             }
 
             document.getElementById('login-ui').innerHTML = `
-                <div class="login-section" style="text-align: center;">
+                <div class="login-section" style="text-align:center;">
                     <div class="brand-name">OIKOS Analytics</div>
                     <h2>Selecciona tu Reporte</h2>
                     <p class="instruction">Elige el dashboard que deseas visualizar</p>
-                    <div id="buttons-container" style="display: flex; flex-direction: column; margin-top: 30px;">
+                    <div style="display:flex;flex-direction:column;margin-top:30px;">
                         ${reportes.map((r, idx) => `
-                            <button class="main-button ${idx === 1 ? 'caledonia' : ''}" 
-                                    onclick="loadReport('${r.url}', '${r.nombre}')">
+                            <button class="main-button ${idx === 1 ? 'caledonia' : ''}"
+                                    onclick='loadReportFromSession(${idx})'>
                                 ${r.nombre}
                             </button>
                         `).join('')}
@@ -530,14 +476,28 @@
             document.getElementById('login-ui').style.display = 'flex';
         }
 
-        function loadReport(encodedUrl, nombre) {
-            const realUrl = decodeUrl(encodedUrl);
-            reporteActivo = nombre || '';  // Guardar qué reporte está activo
+        function loadReportFromSession(idx) {
+            const saved = JSON.parse(localStorage.getItem('oikos_auth_token'));
+            if (saved && saved.reportes[idx]) loadReport(saved.reportes[idx]);
+        }
+
+        function loadReport(reporte) {
+            const realUrl = decodeUrl(reporte.url);
+            reporteActivo = {
+                nombre: reporte.nombre,
+                pdfUrl: reporte.pdfUrl || null
+            };
+
+            // Mostrar / ocultar botón PDF según si hay link
+            const btnPdf = document.getElementById('btn-pdf');
+            if (btnPdf) {
+                btnPdf.style.display = reporteActivo.pdfUrl ? 'flex' : 'none';
+            }
+
             document.getElementById('login-ui').style.display = 'none';
             document.getElementById('bi-container').style.display = 'block';
             document.getElementById('bi-frame').src = realUrl;
         }
     </script>
 </body>
-</html>
 </html>
