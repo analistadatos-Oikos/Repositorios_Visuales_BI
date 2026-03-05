@@ -455,6 +455,7 @@
         // ============================================================
         function volverHome() {
             cerrarMenu();
+            // Ocultar todo primero
             document.getElementById('bi-container').style.display = 'none';
             document.getElementById('bi-frame').src = '';
             const preloader = document.getElementById('preloader');
@@ -612,7 +613,7 @@
                 overlay = document.createElement('div');
                 overlay.id = 'selector-overlay';
                 overlay.style.cssText = `
-                    position:fixed;inset:0;z-index:9999;
+                    position:fixed;inset:0;z-index:999998;
                     display:flex;align-items:center;justify-content:center;
                     background:linear-gradient(135deg,#f0f4ff 0%,#e8ecf9 100%);
                 `;
