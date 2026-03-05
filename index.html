@@ -234,6 +234,71 @@
         #btn-pdf:disabled { background:rgba(100,116,139,0.7); cursor:wait; transform:none; }
 
         @keyframes spin { from{transform:rotate(0deg)} to{transform:rotate(360deg)} }
+
+        /* =========================================================
+           PANTALLA DE PRECARGA
+        ========================================================= */
+        #preloader {
+            display: none;
+            position: fixed;
+            inset: 0;
+            z-index: 999999;
+            background: linear-gradient(150deg, var(--primary-blue) 0%, var(--deep-blue) 100%);
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 32px;
+            animation: fadeInLoader 0.25s ease-out;
+        }
+        #preloader.visible { display: flex; }
+        @keyframes fadeInLoader { from{opacity:0} to{opacity:1} }
+
+        .preloader-logo {
+            font-family: 'Outfit', sans-serif;
+            font-size: 42px;
+            font-weight: 800;
+            color: white;
+            letter-spacing: -1px;
+            opacity: 0;
+            animation: popIn 0.5s 0.1s ease-out forwards;
+        }
+        .preloader-sub {
+            font-size: 13px;
+            color: rgba(255,255,255,0.6);
+            font-weight: 500;
+            letter-spacing: 1px;
+            opacity: 0;
+            animation: popIn 0.5s 0.25s ease-out forwards;
+        }
+        @keyframes popIn { from{opacity:0;transform:translateY(10px)} to{opacity:1;transform:translateY(0)} }
+
+        /* Barra de progreso */
+        .preloader-bar-wrap {
+            width: 220px;
+            height: 3px;
+            background: rgba(255,255,255,0.15);
+            border-radius: 99px;
+            overflow: hidden;
+            opacity: 0;
+            animation: popIn 0.5s 0.35s ease-out forwards;
+        }
+        .preloader-bar {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, var(--accent-cyan), white);
+            border-radius: 99px;
+            animation: barFill 1.8s 0.5s cubic-bezier(0.4,0,0.2,1) forwards;
+        }
+        @keyframes barFill { 0%{width:0%} 60%{width:75%} 85%{width:90%} 100%{width:100%} }
+
+        .preloader-report-name {
+            font-family: 'Outfit', sans-serif;
+            font-size: 15px;
+            font-weight: 700;
+            color: rgba(255,255,255,0.85);
+            opacity: 0;
+            animation: popIn 0.5s 0.4s ease-out forwards;
+        }
     </style>
 </head>
 <body>
@@ -260,6 +325,16 @@
             <h1>Analytics</h1>
             <p>Grupo Empresarial OIKOS S.A.S</p>
         </div>
+    </div>
+
+    <!-- ── PRELOADER ── -->
+    <div id="preloader">
+        <div class="preloader-logo">OIKOS</div>
+        <div class="preloader-report-name" id="preloader-report-name">Cargando reporte...</div>
+        <div class="preloader-bar-wrap">
+            <div class="preloader-bar"></div>
+        </div>
+        <div class="preloader-sub">Analytics · Grupo Empresarial</div>
     </div>
 
     <!-- ── BI CONTAINER ── -->
@@ -376,6 +451,8 @@
             document.getElementById('bi-container').style.display = 'none';
             document.getElementById('bi-frame').src = '';
             reporteActivo = null;
+            // Limpiar reporte activo para que al volver al home no auto-cargue
+            localStorage.removeItem('oikos_reporte_activo');
             const saved = JSON.parse(localStorage.getItem('oikos_auth_token'));
             if (saved && saved.reportes && saved.reportes.length > 1) {
                 document.getElementById('login-ui').style.display = 'flex';
@@ -428,18 +505,17 @@
         // SESIÓN
         // ============================================================
         window.onload = () => {
-            // ── NUEVO: soporte para pestaña duplicada ──
-            // Si venimos de una pestaña duplicada, sessionStorage estará vacío
-            // pero localStorage sigue teniendo la sesión válida → restaurar
             const saved = JSON.parse(localStorage.getItem('oikos_auth_token'));
             if (saved && (new Date().getTime() - saved.time < SESSION_DURATION)) {
-                // Refrescar el timestamp para que la sesión siga contando desde ahora
-                // (opcional: quitar esta línea si preferís que expire desde el login original)
-                // saved.time = new Date().getTime();
-                // localStorage.setItem('oikos_auth_token', JSON.stringify(saved));
-                showReportSelector(saved.reportes);
+                // Verificar si había un reporte activo guardado (pestaña duplicada)
+                const reporteGuardado = localStorage.getItem('oikos_reporte_activo');
+                if (reporteGuardado) {
+                    const rep = JSON.parse(reporteGuardado);
+                    loadReport(rep);
+                } else {
+                    showReportSelector(saved.reportes);
+                }
             } else {
-                // Mostrar login normal + cargar fecha de actualización
                 cargarFechaActualizacion();
             }
         };
@@ -544,14 +620,59 @@
 
         function loadReport(reporte) {
             const realUrl = decodeUrl(reporte.url);
-            reporteActivo = { nombre: reporte.nombre, pdfUrl: reporte.pdfUrl || null };
+            reporteActivo = { nombre: reporte.nombre, pdfUrl: reporte.pdfUrl || null, url: reporte.url };
+
+            // Guardar reporte activo en localStorage para recuperarlo al duplicar pestaña
+            localStorage.setItem('oikos_reporte_activo', JSON.stringify({
+                nombre: reporte.nombre,
+                url:    reporte.url,
+                pdfUrl: reporte.pdfUrl || null
+            }));
+
+            // Mostrar preloader con nombre del reporte
+            const preloader = document.getElementById('preloader');
+            const preloaderName = document.getElementById('preloader-report-name');
+            if (preloaderName) preloaderName.textContent = reporte.nombre;
+            preloader.classList.add('visible');
+
+            // Ocultar login
+            document.getElementById('login-ui').style.display = 'none';
+
+            // Cargar iframe
+            const frame = document.getElementById('bi-frame');
+            frame.src = realUrl;
+
+            // Cuando el iframe cargue, quitar preloader con fade
+            frame.onload = () => {
+                preloader.style.transition = 'opacity 0.5s ease';
+                preloader.style.opacity = '0';
+                setTimeout(() => {
+                    preloader.classList.remove('visible');
+                    preloader.style.opacity = '';
+                    preloader.style.transition = '';
+                    // Reiniciar la animación de la barra para próximas cargas
+                    const bar = preloader.querySelector('.preloader-bar');
+                    if (bar) { bar.style.animation = 'none'; bar.offsetHeight; bar.style.animation = ''; }
+                }, 500);
+                document.getElementById('bi-container').style.display = 'block';
+            };
+
+            // Por si el iframe no dispara onload (algunos embeds no lo hacen), forzar tras 4s
+            setTimeout(() => {
+                if (preloader.classList.contains('visible')) {
+                    preloader.style.transition = 'opacity 0.5s ease';
+                    preloader.style.opacity = '0';
+                    setTimeout(() => {
+                        preloader.classList.remove('visible');
+                        preloader.style.opacity = '';
+                        preloader.style.transition = '';
+                    }, 500);
+                    document.getElementById('bi-container').style.display = 'block';
+                }
+            }, 4000);
 
             const btnPdf = document.getElementById('btn-pdf');
             if (btnPdf) btnPdf.style.display = reporteActivo.pdfUrl ? 'flex' : 'none';
-
-            document.getElementById('login-ui').style.display = 'none';
-            document.getElementById('bi-container').style.display = 'block';
-            document.getElementById('bi-frame').src = realUrl;
         }
     </script>
 </body>
