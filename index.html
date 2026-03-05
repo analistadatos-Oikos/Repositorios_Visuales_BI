@@ -448,14 +448,22 @@
         // ============================================================
         function volverHome() {
             cerrarMenu();
+            // Ocultar bi-container y limpiar iframe
             document.getElementById('bi-container').style.display = 'none';
             document.getElementById('bi-frame').src = '';
+            // Asegurarse de que el preloader esté oculto
+            const preloader = document.getElementById('preloader');
+            preloader.classList.remove('visible');
+            preloader.style.opacity = '';
+            preloader.style.transition = '';
             reporteActivo = null;
-            // Limpiar reporte activo para que al volver al home no auto-cargue
+            // Limpiar reporte activo guardado
             localStorage.removeItem('oikos_reporte_activo');
             const saved = JSON.parse(localStorage.getItem('oikos_auth_token'));
             if (saved && saved.reportes && saved.reportes.length > 1) {
-                document.getElementById('login-ui').style.display = 'flex';
+                // Mostrar login-ui explícitamente antes de renderizar el selector
+                const loginUI = document.getElementById('login-ui');
+                loginUI.style.display = 'flex';
                 showReportSelector(saved.reportes);
             } else {
                 window.location.reload();
@@ -502,12 +510,28 @@
         }
 
         // ============================================================
+        // OCULTAR LOGIN INMEDIATAMENTE si ya hay sesión + reporte activo
+        // (evita el flash del formulario al duplicar pestaña)
+        // ============================================================
+        (function() {
+            try {
+                const saved = JSON.parse(localStorage.getItem('oikos_auth_token'));
+                const rep   = localStorage.getItem('oikos_reporte_activo');
+                if (saved && rep && (new Date().getTime() - saved.time < SESSION_DURATION)) {
+                    document.getElementById('login-ui').style.display = 'none';
+                    document.getElementById('preloader').classList.add('visible');
+                    const nombre = JSON.parse(rep).nombre || 'Cargando reporte...';
+                    document.getElementById('preloader-report-name').textContent = nombre;
+                }
+            } catch(e) {}
+        })();
+
+        // ============================================================
         // SESIÓN
         // ============================================================
         window.onload = () => {
             const saved = JSON.parse(localStorage.getItem('oikos_auth_token'));
             if (saved && (new Date().getTime() - saved.time < SESSION_DURATION)) {
-                // Verificar si había un reporte activo guardado (pestaña duplicada)
                 const reporteGuardado = localStorage.getItem('oikos_reporte_activo');
                 if (reporteGuardado) {
                     const rep = JSON.parse(reporteGuardado);
