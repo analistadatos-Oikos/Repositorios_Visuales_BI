@@ -226,6 +226,12 @@
         }
         #btn-home:hover { background:rgba(0,51,102,0.97); transform:translateX(-3px); box-shadow:0 5px 16px rgba(0,74,153,0.55); }
 
+        #btn-switch {
+            background: rgba(5,150,105,0.88);
+            box-shadow: 0 3px 12px rgba(5,150,105,0.45);
+        }
+        #btn-switch:hover { background:rgba(4,120,87,0.97); transform:translateX(-3px); box-shadow:0 5px 16px rgba(5,150,105,0.55); }
+
         #btn-pdf {
             background: rgba(185,28,28,0.88);
             box-shadow: 0 3px 12px rgba(185,28,28,0.45);
@@ -353,6 +359,7 @@
                 </svg>
                 Ver / Descargar PDF
             </button>
+            <div id="btn-switch-wrap"></div>
             <button class="menu-btn" id="btn-home" onclick="volverHome()">
                 <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                     <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/>
@@ -448,22 +455,16 @@
         // ============================================================
         function volverHome() {
             cerrarMenu();
-            // Ocultar bi-container y limpiar iframe
             document.getElementById('bi-container').style.display = 'none';
             document.getElementById('bi-frame').src = '';
-            // Asegurarse de que el preloader esté oculto
             const preloader = document.getElementById('preloader');
             preloader.classList.remove('visible');
             preloader.style.opacity = '';
             preloader.style.transition = '';
             reporteActivo = null;
-            // Limpiar reporte activo guardado
             localStorage.removeItem('oikos_reporte_activo');
             const saved = JSON.parse(localStorage.getItem('oikos_auth_token'));
             if (saved && saved.reportes && saved.reportes.length > 1) {
-                // Mostrar login-ui explícitamente antes de renderizar el selector
-                const loginUI = document.getElementById('login-ui');
-                loginUI.style.display = 'flex';
                 showReportSelector(saved.reportes);
             } else {
                 window.location.reload();
@@ -603,38 +604,81 @@
         function showReportSelector(reportes) {
             if (reportes.length === 1) { loadReport(reportes[0]); return; }
 
-            // Obtener fecha cacheada (si existe) para mostrarla en el selector también
             const cachedFecha = sessionStorage.getItem('oikos_update_date');
 
-            document.getElementById('login-ui').innerHTML = `
-                <div class="login-section" style="text-align:center;">
-                    <div class="brand-name">OIKOS Analytics</div>
-                    <h2>Selecciona tu Reporte</h2>
-                    <p class="instruction">Elige el dashboard que deseas visualizar</p>
-                    <div style="display:flex;flex-direction:column;margin-top:30px;">
-                        ${reportes.map((r,idx) => `
-                            <button class="main-button ${idx===1?'caledonia':''}"
-                                    onclick="loadReportFromSession(${idx})">
-                                ${r.nombre}
-                            </button>`).join('')}
-                    </div>
-                    <button class="btn-logout" onclick="salidaSegura()">🔒 SALIDA SEGURA</button>
-                    <div id="update-badge" style="display:${cachedFecha ? 'flex' : 'none'};">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:12px;height:12px;opacity:0.6;">
-                            <circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/>
-                        </svg>
-                        ${cachedFecha ? 'Actualizado: ' + cachedFecha : ''}
-                    </div>
-                </div>
-                <div class="welcome-section">
-                    <h1>Analytics</h1>
-                    <p>Grupo Empresarial OIKOS S.A.S</p>
-                </div>`;
+            // Usar el selector-overlay en vez de pisar el login-ui completo
+            let overlay = document.getElementById('selector-overlay');
+            if (!overlay) {
+                overlay = document.createElement('div');
+                overlay.id = 'selector-overlay';
+                overlay.style.cssText = `
+                    position:fixed;inset:0;z-index:9999;
+                    display:flex;align-items:center;justify-content:center;
+                    background:linear-gradient(135deg,#f0f4ff 0%,#e8ecf9 100%);
+                `;
+                // Círculos decorativos
+                overlay.innerHTML = `
+                    <div style="position:absolute;border-radius:50%;opacity:0.15;filter:blur(50px);
+                        width:300px;height:300px;background:#004a99;top:-100px;left:-100px;"></div>
+                    <div style="position:absolute;border-radius:50%;opacity:0.15;filter:blur(50px);
+                        width:400px;height:400px;background:#00d2ff;bottom:-150px;right:-150px;"></div>
+                    <div id="selector-card" style="
+                        display:flex;background:white;border-radius:28px;
+                        box-shadow:0 40px 100px rgba(0,0,0,0.1);
+                        max-width:1000px;width:92%;min-height:600px;
+                        overflow:hidden;position:relative;z-index:1;
+                        animation:slideUp 0.5s ease-out;
+                    ">
+                        <div style="flex:1.2;padding:50px 60px;display:flex;flex-direction:column;justify-content:center;text-align:center;">
+                            <div style="font-family:Outfit,sans-serif;font-size:32px;font-weight:800;color:#004a99;margin-bottom:40px;letter-spacing:-1px;">OIKOS Analytics</div>
+                            <h2 style="font-family:Outfit,sans-serif;font-size:26px;color:#1e293b;margin-bottom:12px;">Selecciona tu Reporte</h2>
+                            <p style="font-size:13px;color:#64748b;margin-bottom:25px;line-height:1.5;">Elige el dashboard que deseas visualizar</p>
+                            <div style="display:flex;flex-direction:column;margin-top:10px;" id="selector-btns"></div>
+                            <button onclick="salidaSegura()" style="width:100%;padding:10px 20px;background:white;color:#64748b;border:2px solid #e2e8f0;border-radius:10px;font-weight:600;font-family:Outfit,sans-serif;cursor:pointer;font-size:12px;margin-top:20px;transition:0.3s;">🔒 SALIDA SEGURA</button>
+                            <div id="selector-badge" style="display:${cachedFecha?'flex':'none'};align-items:center;justify-content:center;gap:6px;margin-top:14px;padding:8px 16px;background:rgba(0,74,153,0.06);border:1px solid rgba(0,74,153,0.15);border-radius:20px;font-size:11px;font-weight:600;color:#475569;">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:12px;height:12px;opacity:0.6;flex-shrink:0;"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+                                ${cachedFecha ? 'Actualizado: '+cachedFecha : ''}
+                            </div>
+                        </div>
+                        <div style="flex:1;background:linear-gradient(150deg,#004a99 0%,#003366 100%);padding:60px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;color:white;">
+                            <h1 style="font-family:Outfit,sans-serif;font-size:44px;margin-bottom:20px;">Analytics</h1>
+                            <p style="font-size:15px;opacity:0.8;line-height:1.6;max-width:280px;">Grupo Empresarial OIKOS S.A.S</p>
+                        </div>
+                    </div>`;
+                document.body.appendChild(overlay);
+            } else {
+                overlay.style.display = 'flex';
+            }
 
-            document.getElementById('login-ui').style.display = 'flex';
+            // Renderizar botones
+            const btnsDiv = document.getElementById('selector-btns');
+            btnsDiv.innerHTML = reportes.map((r, idx) => `
+                <button onclick="loadReportFromSession(${idx})" style="
+                    width:100%;padding:18px;background:${idx===1?'#9C182F':'#004a99'};color:white;
+                    border:none;border-radius:14px;font-weight:700;font-family:Outfit,sans-serif;
+                    cursor:pointer;transition:0.3s;box-shadow:0 10px 25px rgba(0,0,0,0.15);margin-bottom:12px;
+                    font-size:15px;
+                " onmouseover="this.style.opacity='0.88';this.style.transform='translateY(-2px)'"
+                   onmouseout="this.style.opacity='1';this.style.transform='translateY(0)'">
+                    ${r.nombre}
+                </button>`).join('');
 
-            // Si no hay caché, pedir la fecha al backend
+            // Actualizar badge si hay fecha
+            const badge = document.getElementById('selector-badge');
+            if (badge && cachedFecha) {
+                badge.style.display = 'flex';
+                badge.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:12px;height:12px;opacity:0.6;flex-shrink:0;"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg> Actualizado: ${cachedFecha}`;
+            }
+
+            // Ocultar login original
+            document.getElementById('login-ui').style.display = 'none';
+
             if (!cachedFecha) cargarFechaActualizacion();
+        }
+
+        function ocultarSelector() {
+            const overlay = document.getElementById('selector-overlay');
+            if (overlay) overlay.style.display = 'none';
         }
 
         function loadReportFromSession(idx) {
@@ -646,27 +690,51 @@
             const realUrl = decodeUrl(reporte.url);
             reporteActivo = { nombre: reporte.nombre, pdfUrl: reporte.pdfUrl || null, url: reporte.url };
 
-            // Guardar reporte activo en localStorage para recuperarlo al duplicar pestaña
+            // Guardar reporte activo para duplicar pestaña
             localStorage.setItem('oikos_reporte_activo', JSON.stringify({
-                nombre: reporte.nombre,
-                url:    reporte.url,
-                pdfUrl: reporte.pdfUrl || null
+                nombre: reporte.nombre, url: reporte.url, pdfUrl: reporte.pdfUrl || null
             }));
 
-            // Mostrar preloader con nombre del reporte
+            // Ocultar selector y login
+            ocultarSelector();
+            document.getElementById('login-ui').style.display = 'none';
+
+            // Generar botón "Ir a [otro reporte]" en el menú
+            const saved = JSON.parse(localStorage.getItem('oikos_auth_token'));
+            const switchWrap = document.getElementById('btn-switch-wrap');
+            if (switchWrap && saved && saved.reportes.length > 1) {
+                const otroIdx   = saved.reportes.findIndex(r => r.nombre !== reporte.nombre);
+                const otroNombre = otroIdx >= 0 ? saved.reportes[otroIdx].nombre : null;
+                if (otroNombre) {
+                    switchWrap.innerHTML = `
+                        <button class="menu-btn" id="btn-switch" onclick="loadReportFromSession(${otroIdx})">
+                            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" style="width:17px;height:17px;fill:white;flex-shrink:0;">
+                                <path d="M6.99 11L3 15l3.99 4v-3H14v-2H6.99v-3zM21 9l-3.99-4v3H10v2h7.01v3L21 9z"/>
+                            </svg>
+                            Ir a ${otroNombre}
+                        </button>`;
+                } else {
+                    switchWrap.innerHTML = '';
+                }
+            }
+
+            // Mostrar PDF button
+            const btnPdf = document.getElementById('btn-pdf');
+            if (btnPdf) btnPdf.style.display = reporteActivo.pdfUrl ? 'flex' : 'none';
+
+            // Preloader
             const preloader = document.getElementById('preloader');
             const preloaderName = document.getElementById('preloader-report-name');
             if (preloaderName) preloaderName.textContent = reporte.nombre;
+            // Reiniciar animación de la barra
+            const bar = preloader.querySelector('.preloader-bar');
+            if (bar) { bar.style.animation = 'none'; bar.offsetHeight; bar.style.animation = 'barFill 1.8s 0.5s cubic-bezier(0.4,0,0.2,1) forwards'; }
             preloader.classList.add('visible');
-
-            // Ocultar login
-            document.getElementById('login-ui').style.display = 'none';
 
             // Cargar iframe
             const frame = document.getElementById('bi-frame');
             frame.src = realUrl;
 
-            // Cuando el iframe cargue, quitar preloader con fade
             frame.onload = () => {
                 preloader.style.transition = 'opacity 0.5s ease';
                 preloader.style.opacity = '0';
@@ -674,14 +742,11 @@
                     preloader.classList.remove('visible');
                     preloader.style.opacity = '';
                     preloader.style.transition = '';
-                    // Reiniciar la animación de la barra para próximas cargas
-                    const bar = preloader.querySelector('.preloader-bar');
-                    if (bar) { bar.style.animation = 'none'; bar.offsetHeight; bar.style.animation = ''; }
                 }, 500);
                 document.getElementById('bi-container').style.display = 'block';
             };
 
-            // Por si el iframe no dispara onload (algunos embeds no lo hacen), forzar tras 4s
+            // Fallback 4s
             setTimeout(() => {
                 if (preloader.classList.contains('visible')) {
                     preloader.style.transition = 'opacity 0.5s ease';
@@ -694,9 +759,6 @@
                     document.getElementById('bi-container').style.display = 'block';
                 }
             }, 4000);
-
-            const btnPdf = document.getElementById('btn-pdf');
-            if (btnPdf) btnPdf.style.display = reporteActivo.pdfUrl ? 'flex' : 'none';
         }
     </script>
 </body>
