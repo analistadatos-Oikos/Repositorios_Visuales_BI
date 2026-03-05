@@ -60,6 +60,38 @@
         #status-msg { margin-top:15px; font-size:12px; text-align:center; font-weight:600; }
 
         /* =========================================================
+           BADGE DE FECHA DE ACTUALIZACIÓN
+        ========================================================= */
+        #update-badge {
+            display: none; /* se muestra via JS cuando hay dato */
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            margin-top: 14px;
+            padding: 8px 16px;
+            background: rgba(0, 74, 153, 0.06);
+            border: 1px solid rgba(0, 74, 153, 0.15);
+            border-radius: 20px;
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            font-size: 11px;
+            font-weight: 600;
+            color: #475569;
+            letter-spacing: 0.3px;
+            animation: fadeInBadge 0.6s ease-out both;
+            cursor: default;
+        }
+        #update-badge svg {
+            width: 12px; height: 12px;
+            flex-shrink: 0;
+            opacity: 0.6;
+        }
+        @keyframes fadeInBadge {
+            from { opacity: 0; transform: translateY(6px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+
+        /* =========================================================
            BI CONTAINER
         ========================================================= */
         #bi-container {
@@ -105,7 +137,6 @@
 
         /* =========================================================
            BOTÓN MENÚ — alargado, pegado al fondo derecha
-           Cubre la zona de vínculos para compartir de Power BI
         ========================================================= */
         #btn-menu-toggle {
             position: absolute;
@@ -141,7 +172,7 @@
         #btn-menu-toggle.open svg { transform: rotate(180deg); }
 
         /* =========================================================
-           PANEL GLASSMORPHISM — aparece encima del overlay
+           PANEL GLASSMORPHISM
         ========================================================= */
         #menu-panel {
             position: absolute;
@@ -159,7 +190,6 @@
             padding: 14px;
             box-shadow: 0 16px 48px rgba(0,0,0,0.38);
             min-width: 215px;
-            /* oculto por defecto */
             opacity: 0;
             transform: translateY(14px) scale(0.95);
             pointer-events: none;
@@ -171,7 +201,6 @@
             pointer-events: auto;
         }
 
-        /* Botones del panel */
         .menu-btn {
             display: flex;
             align-items: center;
@@ -238,13 +267,10 @@
 
         <iframe id="bi-frame" src=""></iframe>
 
-        <!-- Overlay de desenfoque -->
         <div id="bi-overlay" onclick="cerrarMenu()"></div>
 
-        <!-- Shield seguridad top-right -->
         <div id="shield-top-right" class="shield" onclick="securityReset()"></div>
 
-        <!-- Panel glassmorphism (se abre hacia arriba) -->
         <div id="menu-panel">
             <button class="menu-btn" id="btn-pdf" onclick="descargarPDF()">
                 <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -260,7 +286,6 @@
             </button>
         </div>
 
-        <!-- Botón MENÚ alargado pegado al fondo -->
         <button id="btn-menu-toggle" onclick="toggleMenu()">
             <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                 <path d="M7 10l5 5 5-5z"/>
@@ -369,12 +394,53 @@
         function decodeUrl(enc) { return atob(atob(enc).split('').reverse().join('')); }
 
         // ============================================================
+        // FECHA DE ACTUALIZACIÓN — lee E1 del sheet "Link Bi"
+        // Se guarda en sessionStorage para no re-pedir en cada carga
+        // ============================================================
+        async function cargarFechaActualizacion() {
+            try {
+                // Primero buscar en sessionStorage para evitar llamadas extras
+                const cached = sessionStorage.getItem('oikos_update_date');
+                if (cached) { mostrarBadgeFecha(cached); return; }
+
+                const res  = await fetch(`${API_URL}?action=getFechaActualizacion`);
+                const data = await res.json();
+                if (data.status === 'success' && data.fecha) {
+                    sessionStorage.setItem('oikos_update_date', data.fecha);
+                    mostrarBadgeFecha(data.fecha);
+                }
+            } catch(e) { /* silencioso si falla */ }
+        }
+
+        function mostrarBadgeFecha(fecha) {
+            // Buscar el badge dentro del login-ui (puede estar en login o selector)
+            const badge = document.getElementById('update-badge');
+            if (!badge) return;
+            badge.innerHTML = `
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/>
+                </svg>
+                Actualizado: ${fecha}`;
+            badge.style.display = 'flex';
+        }
+
+        // ============================================================
         // SESIÓN
         // ============================================================
         window.onload = () => {
+            // ── NUEVO: soporte para pestaña duplicada ──
+            // Si venimos de una pestaña duplicada, sessionStorage estará vacío
+            // pero localStorage sigue teniendo la sesión válida → restaurar
             const saved = JSON.parse(localStorage.getItem('oikos_auth_token'));
             if (saved && (new Date().getTime() - saved.time < SESSION_DURATION)) {
+                // Refrescar el timestamp para que la sesión siga contando desde ahora
+                // (opcional: quitar esta línea si preferís que expire desde el login original)
+                // saved.time = new Date().getTime();
+                // localStorage.setItem('oikos_auth_token', JSON.stringify(saved));
                 showReportSelector(saved.reportes);
+            } else {
+                // Mostrar login normal + cargar fecha de actualización
+                cargarFechaActualizacion();
             }
         };
 
@@ -436,6 +502,10 @@
         // ============================================================
         function showReportSelector(reportes) {
             if (reportes.length === 1) { loadReport(reportes[0]); return; }
+
+            // Obtener fecha cacheada (si existe) para mostrarla en el selector también
+            const cachedFecha = sessionStorage.getItem('oikos_update_date');
+
             document.getElementById('login-ui').innerHTML = `
                 <div class="login-section" style="text-align:center;">
                     <div class="brand-name">OIKOS Analytics</div>
@@ -449,12 +519,22 @@
                             </button>`).join('')}
                     </div>
                     <button class="btn-logout" onclick="salidaSegura()">🔒 SALIDA SEGURA</button>
+                    <div id="update-badge" style="display:${cachedFecha ? 'flex' : 'none'};">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:12px;height:12px;opacity:0.6;">
+                            <circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/>
+                        </svg>
+                        ${cachedFecha ? 'Actualizado: ' + cachedFecha : ''}
+                    </div>
                 </div>
                 <div class="welcome-section">
                     <h1>Analytics</h1>
                     <p>Grupo Empresarial OIKOS S.A.S</p>
                 </div>`;
+
             document.getElementById('login-ui').style.display = 'flex';
+
+            // Si no hay caché, pedir la fecha al backend
+            if (!cachedFecha) cargarFechaActualizacion();
         }
 
         function loadReportFromSession(idx) {
@@ -466,7 +546,6 @@
             const realUrl = decodeUrl(reporte.url);
             reporteActivo = { nombre: reporte.nombre, pdfUrl: reporte.pdfUrl || null };
 
-            // Mostrar/ocultar botón PDF según si tiene link
             const btnPdf = document.getElementById('btn-pdf');
             if (btnPdf) btnPdf.style.display = reporteActivo.pdfUrl ? 'flex' : 'none';
 
