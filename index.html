@@ -91,30 +91,60 @@
         }
 
         /* =========================================================
-           BADGE DE FECHA DENTRO DEL BI (esquina inferior izquierda)
+           TARJETA GLASS DE ACTUALIZACIÓN DENTRO DEL BI
+           (superior derecha, debajo del shield de seguridad)
         ========================================================= */
         #bi-update-badge {
             display: none; /* se muestra via JS cuando hay dato */
             position: absolute;
-            bottom: 0;
-            left: 0;
+            top: 62px;   /* debajo del shield (55px) para no pisar su zona de clic */
+            right: 14px;
             z-index: 100002; /* sobre el iframe, debajo del overlay del menú */
+            pointer-events: none; /* tarjeta solo informativa, no bloquea nada */
             align-items: center;
-            gap: 6px;
-            padding: 7px 14px;
-            background: rgba(255,255,255,0.92);
-            border: 1px solid rgba(0,74,153,0.15);
-            border-radius: 0 10px 0 0;
-            backdrop-filter: blur(8px);
-            -webkit-backdrop-filter: blur(8px);
-            font-size: 11px;
-            font-weight: 600;
-            color: #475569;
-            letter-spacing: 0.3px;
-            box-shadow: 0 -2px 12px rgba(0,0,0,0.08);
-            cursor: default;
+            gap: 12px;
+            padding: 11px 20px 11px 15px;
+            background: linear-gradient(135deg, rgba(0,51,102,0.75) 0%, rgba(0,74,153,0.58) 100%);
+            backdrop-filter: blur(16px) saturate(180%);
+            -webkit-backdrop-filter: blur(16px) saturate(180%);
+            border: 1px solid rgba(0,210,255,0.4);
+            border-radius: 14px;
+            box-shadow: 0 8px 28px rgba(0,30,70,0.45), inset 0 1px 0 rgba(255,255,255,0.2);
+            animation: fadeInBadge 0.6s ease-out both;
         }
-        #bi-update-badge svg { width:12px; height:12px; flex-shrink:0; opacity:0.6; }
+        .badge-dot {
+            width: 9px; height: 9px;
+            border-radius: 50%;
+            background: var(--accent-cyan);
+            box-shadow: 0 0 12px var(--accent-cyan);
+            animation: pulseDot 2s ease-in-out infinite;
+            flex-shrink: 0;
+        }
+        @keyframes pulseDot {
+            0%, 100% { transform: scale(1);    opacity: 1;   }
+            50%      { transform: scale(1.35); opacity: 0.55; }
+        }
+        .badge-info  { display: flex; flex-direction: column; line-height: 1.3; }
+        .badge-label {
+            font-size: 9px; font-weight: 700;
+            letter-spacing: 1.4px; text-transform: uppercase;
+            color: var(--accent-cyan);
+        }
+        .badge-fecha {
+            display: flex; align-items: center; gap: 8px;
+            font-family: 'Outfit', sans-serif;
+            font-size: 13.5px; font-weight: 700;
+            color: white; letter-spacing: 0.3px;
+        }
+        .badge-hora {
+            font-size: 11px; font-weight: 700;
+            color: var(--accent-cyan);
+            background: rgba(0,210,255,0.12);
+            border: 1px solid rgba(0,210,255,0.35);
+            border-radius: 8px;
+            padding: 2px 8px;
+            letter-spacing: 0.5px;
+        }
 
         /* =========================================================
            BI CONTAINER
@@ -530,13 +560,32 @@
         // Actualiza TODOS los badges de fecha que existan en pantalla:
         // login (#update-badge), selector (#selector-badge) y BI (#bi-update-badge)
         function mostrarBadgeFecha(fecha) {
-            const svgIcon = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:12px;height:12px;opacity:0.6;flex-shrink:0;"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>`;
-            ['update-badge', 'selector-badge', 'bi-update-badge'].forEach(id => {
+            // El sheet puede traer el texto "Última actualización:" incluido — lo quitamos para no duplicar
+            const fechaLimpia = String(fecha).replace(/^\s*(actualizado|ultima\s+actualizacion|última\s+actualizaci[oó]n)\s*:\s*/i, '').trim();
+            // Separar fecha y hora si vienen juntas (ej: "06/07/2026 08:10:40")
+            const partes    = fechaLimpia.match(/^(\S+)\s+(.+)$/);
+            const soloFecha = partes ? partes[1] : fechaLimpia;
+            const soloHora  = partes ? partes[2] : '';
+
+            const svgIcon = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:13px;height:13px;opacity:0.9;flex-shrink:0;"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>`;
+            // Badges pill (login y selector)
+            ['update-badge', 'selector-badge'].forEach(id => {
                 const badge = document.getElementById(id);
                 if (!badge) return;
-                badge.innerHTML = `${svgIcon} Actualizado: ${fecha}`;
+                badge.innerHTML = `${svgIcon} Actualizado: ${fechaLimpia}`;
                 badge.style.display = 'flex';
             });
+            // Tarjeta glass dentro del BI (superior derecha)
+            const biBadge = document.getElementById('bi-update-badge');
+            if (biBadge) {
+                biBadge.innerHTML = `
+                    <span class="badge-dot"></span>
+                    <span class="badge-info">
+                        <span class="badge-label">Última actualización</span>
+                        <span class="badge-fecha">${soloFecha}${soloHora ? `<span class="badge-hora">${soloHora}</span>` : ''}</span>
+                    </span>`;
+                biBadge.style.display = 'flex';
+            }
         }
 
         // ============================================================
@@ -663,8 +712,8 @@
                             <p style="font-size:13px;color:#64748b;margin-bottom:25px;line-height:1.5;">Elige el dashboard que deseas visualizar</p>
                             <div style="display:flex;flex-direction:column;margin-top:10px;" id="selector-btns"></div>
                             <button onclick="salidaSegura()" style="width:100%;padding:10px 20px;background:white;color:#64748b;border:2px solid #e2e8f0;border-radius:10px;font-weight:600;font-family:Outfit,sans-serif;cursor:pointer;font-size:12px;margin-top:20px;transition:0.3s;">🔒 SALIDA SEGURA</button>
-                            <div id="selector-badge" style="display:${cachedFecha?'flex':'none'};align-items:center;justify-content:center;gap:6px;margin-top:14px;padding:8px 16px;background:rgba(0,74,153,0.06);border:1px solid rgba(0,74,153,0.15);border-radius:20px;font-size:11px;font-weight:600;color:#475569;">
-                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:12px;height:12px;opacity:0.6;flex-shrink:0;"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+                            <div id="selector-badge" style="display:${cachedFecha?'flex':'none'};align-items:center;justify-content:center;gap:8px;margin-top:14px;padding:10px 18px;background:linear-gradient(135deg,#004a99 0%,#0077d9 60%,#00d2ff 140%);border:1px solid rgba(0,210,255,0.4);border-radius:20px;font-size:11.5px;font-weight:700;color:white;letter-spacing:0.4px;box-shadow:0 6px 18px rgba(0,74,153,0.35),inset 0 1px 0 rgba(255,255,255,0.25);">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:13px;height:13px;opacity:0.9;flex-shrink:0;"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
                                 ${cachedFecha ? 'Actualizado: '+cachedFecha : ''}
                             </div>
                         </div>
@@ -695,7 +744,7 @@
             const badge = document.getElementById('selector-badge');
             if (badge && cachedFecha) {
                 badge.style.display = 'flex';
-                badge.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:12px;height:12px;opacity:0.6;flex-shrink:0;"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg> Actualizado: ${cachedFecha}`;
+                badge.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:13px;height:13px;opacity:0.9;flex-shrink:0;"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg> Actualizado: ${cachedFecha}`;
             }
 
             // Ocultar login original
