@@ -66,25 +66,24 @@
             display: none; /* se muestra via JS cuando hay dato */
             align-items: center;
             justify-content: center;
-            gap: 6px;
+            gap: 8px;
             margin-top: 14px;
-            padding: 8px 16px;
-            background: rgba(0, 74, 153, 0.06);
-            border: 1px solid rgba(0, 74, 153, 0.15);
+            padding: 10px 18px;
+            background: linear-gradient(135deg, var(--primary-blue) 0%, #0077d9 60%, var(--accent-cyan) 140%);
+            border: 1px solid rgba(0, 210, 255, 0.4);
             border-radius: 20px;
-            backdrop-filter: blur(8px);
-            -webkit-backdrop-filter: blur(8px);
-            font-size: 11px;
-            font-weight: 600;
-            color: #475569;
-            letter-spacing: 0.3px;
+            font-size: 11.5px;
+            font-weight: 700;
+            color: white;
+            letter-spacing: 0.4px;
+            box-shadow: 0 6px 18px rgba(0,74,153,0.35), inset 0 1px 0 rgba(255,255,255,0.25);
             animation: fadeInBadge 0.6s ease-out both;
             cursor: default;
         }
         #update-badge svg {
-            width: 12px; height: 12px;
+            width: 13px; height: 13px;
             flex-shrink: 0;
-            opacity: 0.6;
+            opacity: 0.9;
         }
         @keyframes fadeInBadge {
             from { opacity: 0; transform: translateY(6px); }
