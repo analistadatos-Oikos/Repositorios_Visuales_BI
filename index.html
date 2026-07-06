@@ -99,7 +99,7 @@
             display: none; /* JS lo pasa a flex cuando llega el dato */
             position: absolute;
             top: 0;
-            right: 0; /* full a la derecha, espejo del botón MENÚ */
+            right: 46px; /* pegada al lado izquierdo del botón del reloj */
             z-index: 100002; /* sobre el iframe, debajo del overlay del menú */
             pointer-events: none; /* barra solo informativa; los clics caen al shield de abajo */
             align-items: center;
@@ -115,42 +115,48 @@
             border-radius: 0 0 0 14px;
             box-shadow: 0 6px 22px rgba(0,74,153,0.5), inset 0 -1px 0 rgba(0,210,255,0.5);
             white-space: nowrap;
-            /* MODO NINJA: oculta por defecto, aparece al pasar el mouse */
+            /* MODO NINJA: oculta por defecto, se despliega con el botón del reloj */
             opacity: 0;
             transform: translateY(-100%);
             transition: opacity 0.3s ease, transform 0.3s ease;
         }
-
-        /* Zona invisible que detecta el mouse en la esquina superior derecha */
-        #badge-hover-zone {
-            position: absolute;
-            top: 0;
-            right: 0;
-            width: 440px;
-            height: 38px;
-            z-index: 100001; /* debajo del shield: la esquina sigue siendo su territorio */
-            background: transparent;
-        }
-        /* Pista sutil: línea cyan finita para saber que ahí hay algo */
-        #badge-hover-zone::after {
-            content: '';
-            position: absolute;
-            top: 0; right: 0;
-            width: 100%; height: 3px;
-            background: linear-gradient(90deg, transparent, rgba(0,210,255,0.55));
-            border-radius: 0 0 0 3px;
-            transition: opacity 0.3s ease;
-        }
-        /* Al pasar el mouse (por la zona o por el shield de la esquina): aparece la barra */
-        #badge-hover-zone:hover ~ #bi-update-badge,
-        #shield-top-right:hover ~ #bi-update-badge {
+        #bi-update-badge.open {
             opacity: 1;
             transform: translateY(0);
         }
-        /* ...y la línea-pista se esconde mientras la barra está visible */
-        #badge-hover-zone:hover::after {
-            opacity: 0;
+
+        /* Botón reloj — siempre visible en la esquina, despliega la barra */
+        #btn-fecha-toggle {
+            position: absolute;
+            top: 0;
+            right: 0;
+            z-index: 100004; /* sobre el shield para poder recibir el clic */
+            width: 46px;
+            height: 34px;
+            background: linear-gradient(135deg, var(--primary-blue), #0077d9);
+            border: none;
+            border-radius: 0 0 0 12px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 3px 14px rgba(0,74,153,0.5);
+            transition: background 0.2s, box-shadow 0.2s;
         }
+        #btn-fecha-toggle:hover {
+            background: linear-gradient(135deg, var(--deep-blue), var(--primary-blue));
+            box-shadow: 0 4px 18px rgba(0,74,153,0.65);
+        }
+        #btn-fecha-toggle svg {
+            width: 17px; height: 17px;
+            stroke: white; fill: none;
+            transition: stroke 0.2s, transform 0.3s ease;
+        }
+        #btn-fecha-toggle.open {
+            background: linear-gradient(135deg, #0091e0, var(--accent-cyan));
+            box-shadow: 0 4px 18px rgba(0,210,255,0.55);
+        }
+        #btn-fecha-toggle.open svg { stroke: #0a1f33; transform: rotate(360deg); }
         .badge-dot {
             width: 8px; height: 8px;
             border-radius: 50%;
@@ -473,7 +479,11 @@
             MENÚ
         </button>
 
-        <div id="badge-hover-zone"></div>
+        <button id="btn-fecha-toggle" onclick="toggleFechaBar()" title="Fecha de actualización">
+            <svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round">
+                <circle cx="12" cy="12" r="9"/><path d="M12 7v5l3.5 2"/>
+            </svg>
+        </button>
         <div id="bi-update-badge"></div>
 
     </div>
@@ -531,6 +541,16 @@
             document.getElementById('menu-panel').classList.remove('open');
             document.getElementById('bi-overlay').classList.remove('open');
             document.getElementById('btn-menu-toggle').classList.remove('open');
+        }
+
+        // ============================================================
+        // BARRA DE FECHA (botón reloj)
+        // ============================================================
+        let fechaBarOpen = false;
+        function toggleFechaBar() {
+            fechaBarOpen = !fechaBarOpen;
+            document.getElementById('bi-update-badge').classList.toggle('open', fechaBarOpen);
+            document.getElementById('btn-fecha-toggle').classList.toggle('open', fechaBarOpen);
         }
 
         // ============================================================
