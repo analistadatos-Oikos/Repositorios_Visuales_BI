@@ -60,7 +60,7 @@
         #status-msg { margin-top:15px; font-size:12px; text-align:center; font-weight:600; }
 
         /* =========================================================
-           BADGE DE FECHA DE ACTUALIZACIÓN
+           BADGE DE FECHA DE ACTUALIZACIÓN (login / selector)
         ========================================================= */
         #update-badge {
             display: none; /* se muestra via JS cuando hay dato */
@@ -90,6 +90,32 @@
             from { opacity: 0; transform: translateY(6px); }
             to   { opacity: 1; transform: translateY(0); }
         }
+
+        /* =========================================================
+           BADGE DE FECHA DENTRO DEL BI (esquina inferior izquierda)
+        ========================================================= */
+        #bi-update-badge {
+            display: none; /* se muestra via JS cuando hay dato */
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            z-index: 100002; /* sobre el iframe, debajo del overlay del menú */
+            align-items: center;
+            gap: 6px;
+            padding: 7px 14px;
+            background: rgba(255,255,255,0.92);
+            border: 1px solid rgba(0,74,153,0.15);
+            border-radius: 0 10px 0 0;
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            font-size: 11px;
+            font-weight: 600;
+            color: #475569;
+            letter-spacing: 0.3px;
+            box-shadow: 0 -2px 12px rgba(0,0,0,0.08);
+            cursor: default;
+        }
+        #bi-update-badge svg { width:12px; height:12px; flex-shrink:0; opacity:0.6; }
 
         /* =========================================================
            BI CONTAINER
@@ -326,6 +352,7 @@
             </div>
             <button class="main-button" onclick="verifyToken()">INGRESAR AL SISTEMA</button>
             <div id="status-msg"></div>
+            <div id="update-badge"></div>
         </div>
         <div class="welcome-section">
             <h1>Analytics</h1>
@@ -374,6 +401,8 @@
             </svg>
             MENÚ
         </button>
+
+        <div id="bi-update-badge"></div>
 
     </div>
 
@@ -499,16 +528,16 @@
             } catch(e) { /* silencioso si falla */ }
         }
 
+        // Actualiza TODOS los badges de fecha que existan en pantalla:
+        // login (#update-badge), selector (#selector-badge) y BI (#bi-update-badge)
         function mostrarBadgeFecha(fecha) {
-            // Buscar el badge dentro del login-ui (puede estar en login o selector)
-            const badge = document.getElementById('update-badge');
-            if (!badge) return;
-            badge.innerHTML = `
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/>
-                </svg>
-                Actualizado: ${fecha}`;
-            badge.style.display = 'flex';
+            const svgIcon = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:12px;height:12px;opacity:0.6;flex-shrink:0;"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>`;
+            ['update-badge', 'selector-badge', 'bi-update-badge'].forEach(id => {
+                const badge = document.getElementById(id);
+                if (!badge) return;
+                badge.innerHTML = `${svgIcon} Actualizado: ${fecha}`;
+                badge.style.display = 'flex';
+            });
         }
 
         // ============================================================
@@ -532,6 +561,7 @@
         // SESIÓN
         // ============================================================
         window.onload = () => {
+            cargarFechaActualizacion(); // siempre, sin importar la ruta de entrada
             const saved = JSON.parse(localStorage.getItem('oikos_auth_token'));
             if (saved && (new Date().getTime() - saved.time < SESSION_DURATION)) {
                 const reporteGuardado = localStorage.getItem('oikos_reporte_activo');
@@ -541,8 +571,6 @@
                 } else {
                     showReportSelector(saved.reportes);
                 }
-            } else {
-                cargarFechaActualizacion();
             }
         };
 
@@ -760,6 +788,11 @@
                     document.getElementById('bi-container').style.display = 'block';
                 }
             }, 4000);
+
+            // Mostrar fecha de actualización dentro del BI
+            const cachedFecha = sessionStorage.getItem('oikos_update_date');
+            if (cachedFecha) mostrarBadgeFecha(cachedFecha);
+            else cargarFechaActualizacion();
         }
     </script>
 </body>
