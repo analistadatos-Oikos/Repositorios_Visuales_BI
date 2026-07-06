@@ -99,19 +99,20 @@
             display: none; /* se muestra via JS cuando hay dato */
             position: absolute;
             top: 0;
-            right: 195px; /* la esquina (180px) es zona del shield de seguridad */
+            right: 0; /* full a la derecha, espejo del botón MENÚ */
             z-index: 100002; /* sobre el iframe, debajo del overlay del menú */
-            pointer-events: none; /* barra solo informativa, no bloquea nada */
+            pointer-events: none; /* barra solo informativa; los clics caen al shield de abajo */
             align-items: center;
             gap: 12px;
             height: 34px;
-            padding: 0 20px;
+            padding: 0 22px;
             background: linear-gradient(90deg, rgba(0,38,77,0.96) 0%, rgba(0,74,153,0.96) 55%, rgba(0,110,200,0.96) 100%);
             backdrop-filter: blur(12px) saturate(180%);
             -webkit-backdrop-filter: blur(12px) saturate(180%);
             border: 1px solid rgba(0,210,255,0.45);
             border-top: none;
-            border-radius: 0 0 14px 14px;
+            border-right: none;
+            border-radius: 0 0 0 14px;
             box-shadow: 0 6px 22px rgba(0,74,153,0.5), inset 0 -1px 0 rgba(0,210,255,0.5);
             animation: slideDownBadge 0.5s ease-out both;
             white-space: nowrap;
