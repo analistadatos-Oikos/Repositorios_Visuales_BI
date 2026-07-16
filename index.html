@@ -351,123 +351,6 @@
         @keyframes spin { from{transform:rotate(0deg)} to{transform:rotate(360deg)} }
 
         /* =========================================================
-           MODAL HELP DESK — formulario de tickets
-        ========================================================= */
-        #helpdesk-overlay {
-            position: fixed;
-            inset: 0;
-            z-index: 200000;
-            background: rgba(15,23,42,0.55);
-            backdrop-filter: blur(6px);
-            -webkit-backdrop-filter: blur(6px);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 20px;
-            opacity: 0;
-            pointer-events: none;
-            transition: opacity 0.25s ease;
-        }
-        #helpdesk-overlay.open { opacity: 1; pointer-events: auto; }
-
-        #helpdesk-card {
-            background: white;
-            border-radius: 24px;
-            max-width: 460px;
-            width: 100%;
-            max-height: 88vh;
-            overflow-y: auto;
-            box-shadow: 0 30px 80px rgba(0,0,0,0.35);
-            transform: scale(0.94) translateY(16px);
-            transition: transform 0.25s ease;
-        }
-        #helpdesk-overlay.open #helpdesk-card { transform: scale(1) translateY(0); }
-
-        .hd-header {
-            background: linear-gradient(135deg, var(--primary-blue) 0%, var(--deep-blue) 100%);
-            padding: 24px 28px;
-            border-radius: 24px 24px 0 0;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-        }
-        .hd-brand { display:block; font-family:'Outfit',sans-serif; font-size:11px; font-weight:800; letter-spacing:0.18em; color:var(--accent-cyan); }
-        .hd-header h3 { font-family:'Outfit',sans-serif; font-size:20px; color:white; margin-top:4px; }
-        #hd-close {
-            background: rgba(255,255,255,0.15);
-            border: none;
-            color: white;
-            width: 32px; height: 32px;
-            border-radius: 50%;
-            font-size: 20px;
-            line-height: 1;
-            cursor: pointer;
-            transition: background 0.2s;
-        }
-        #hd-close:hover { background: rgba(255,255,255,0.28); }
-
-        .hd-body { padding: 24px 28px 28px; }
-
-        .hd-label {
-            display: block;
-            font-family: 'Outfit', sans-serif;
-            font-size: 0.7rem;
-            text-transform: uppercase;
-            letter-spacing: 0.1em;
-            color: var(--primary-blue);
-            font-weight: 700;
-            margin: 14px 0 6px;
-        }
-        .hd-label:first-child { margin-top: 0; }
-
-        .hd-input-wrapper {
-            display: flex;
-            align-items: center;
-            background: #f8fafc;
-            border: 2px solid #e2e8f0;
-            border-radius: 14px;
-            transition: 0.3s;
-        }
-        .hd-input-wrapper:focus-within { border-color: var(--primary-blue); box-shadow: 0 0 0 4px rgba(0,74,153,0.08); }
-        .hd-input-wrapper.readonly { background: #eef2f7; }
-        .hd-input-wrapper input,
-        .hd-input-wrapper select,
-        .hd-input-wrapper textarea {
-            flex: 1;
-            width: 100%;
-            padding: 13px 16px;
-            border: none;
-            background: transparent;
-            outline: none;
-            font-size: 13.5px;
-            font-family: 'DM Sans', sans-serif;
-            color: #1e293b;
-            resize: vertical;
-        }
-        .hd-input-wrapper.readonly input { color: #64748b; }
-
-        #hd-status { min-height: 18px; font-size: 12.5px; font-weight: 600; margin-bottom: 4px; text-align: center; }
-
-        #hd-enviar {
-            width: 100%;
-            padding: 16px;
-            margin-top: 10px;
-            background: var(--primary-blue);
-            color: white;
-            border: none;
-            border-radius: 14px;
-            font-family: 'Outfit', sans-serif;
-            font-weight: 700;
-            font-size: 13px;
-            letter-spacing: 0.05em;
-            cursor: pointer;
-            transition: 0.3s;
-            box-shadow: 0 10px 25px rgba(0,74,153,0.2);
-        }
-        #hd-enviar:hover { background: var(--deep-blue); transform: translateY(-2px); }
-        #hd-enviar:disabled { opacity: 0.6; cursor: wait; transform: none; }
-
-        /* =========================================================
            PANTALLA DE PRECARGA
         ========================================================= */
         #preloader {
@@ -617,59 +500,8 @@
 
     </div>
 
-    <!-- ── MODAL HELP DESK ── -->
-    <div id="helpdesk-overlay" onclick="cerrarHelpDeskFondo(event)">
-        <div id="helpdesk-card" onclick="event.stopPropagation()">
-            <div class="hd-header">
-                <div>
-                    <span class="hd-brand">OIKOS</span>
-                    <h3>Help Desk</h3>
-                </div>
-                <button id="hd-close" onclick="cerrarHelpDesk()">&times;</button>
-            </div>
-            <div class="hd-body">
-                <div id="hd-status"></div>
-
-                <label class="hd-label">Reporte relacionado</label>
-                <div class="hd-input-wrapper">
-                    <input type="text" id="hd-reporte" placeholder="—">
-                </div>
-
-                <label class="hd-label">Link BI relacionado</label>
-                <div class="hd-input-wrapper">
-                    <input type="text" id="hd-link" placeholder="—">
-                </div>
-
-                <label class="hd-label">Correo solicitante</label>
-                <div class="hd-input-wrapper readonly">
-                    <input type="text" id="hd-correo" placeholder="—" readonly>
-                </div>
-
-                <label class="hd-label" for="hd-tipo">Tipo de incidencia</label>
-                <div class="hd-input-wrapper">
-                    <select id="hd-tipo">
-                        <option value="Bug">Bug / Error en el dashboard</option>
-                        <option value="Datos">Error o inconsistencia de datos</option>
-                        <option value="Acceso">Problema de acceso</option>
-                        <option value="Mejora">Solicitud de mejora</option>
-                        <option value="Otro">Otro</option>
-                    </select>
-                </div>
-
-                <label class="hd-label" for="hd-titulo">Título breve</label>
-                <div class="hd-input-wrapper">
-                    <input type="text" id="hd-titulo" placeholder="Ej: El gráfico de ventas no carga" maxlength="120">
-                </div>
-
-                <label class="hd-label" for="hd-descripcion">Descripción del problema</label>
-                <div class="hd-input-wrapper">
-                    <textarea id="hd-descripcion" rows="4" placeholder="Contános qué pasó, cuándo y qué esperabas ver..."></textarea>
-                </div>
-
-                <button id="hd-enviar" onclick="enviarTicketHelpDesk()">ENVIAR TICKET</button>
-            </div>
-        </div>
-    </div>
+    <!-- Widget oficial de Tally: expone window.Tally.openPopup(...) -->
+    <script async src="https://tally.so/widgets/embed.js"></script>
 
     <script>
         // ============================================================
@@ -737,70 +569,29 @@
         }
 
         // ============================================================
-        // HELP DESK
+        // HELP DESK — abre el formulario REAL de Tally (conectado a
+        // Notion desde el lado de Tally, no se toca nada de eso acá)
+        // como popup encima del BI, vía el widget oficial embed.js
         // ============================================================
+        const TALLY_FORM_ID = 'TU_FORM_ID_AQUI'; // <-- reemplazar por el ID real de tu formulario de Tally
+
         function abrirHelpDesk() {
-            document.getElementById('hd-reporte').value = reporteActivo ? reporteActivo.nombre : '';
-            let linkReal = '';
-            try { if (reporteActivo && reporteActivo.url) linkReal = decodeUrl(reporteActivo.url); } catch(e) {}
-            document.getElementById('hd-link').value = linkReal;
-            document.getElementById('hd-correo').value = localStorage.getItem('oikos_user_email') || '';
-            document.getElementById('hd-tipo').value = 'Bug';
-            document.getElementById('hd-titulo').value = '';
-            document.getElementById('hd-descripcion').value = '';
-            document.getElementById('hd-status').innerHTML = '';
             cerrarMenu();
-            document.getElementById('helpdesk-overlay').classList.add('open');
-        }
-
-        function cerrarHelpDesk() {
-            document.getElementById('helpdesk-overlay').classList.remove('open');
-        }
-
-        function cerrarHelpDeskFondo(e) {
-            if (e.target.id === 'helpdesk-overlay') cerrarHelpDesk();
-        }
-
-        async function enviarTicketHelpDesk() {
-            const titulo = document.getElementById('hd-titulo').value.trim();
-            const descripcion = document.getElementById('hd-descripcion').value.trim();
-            const statusEl = document.getElementById('hd-status');
-
-            if (!titulo || !descripcion) {
-                statusEl.innerHTML = '<span style="color:#ef4444;">Completa el título y la descripción.</span>';
+            if (typeof Tally === 'undefined') {
+                alert('El formulario de soporte no cargó todavía. Intenta de nuevo en un segundo.');
                 return;
             }
-
-            const btn = document.getElementById('hd-enviar');
-            btn.disabled = true;
-            btn.textContent = 'ENVIANDO...';
-            statusEl.innerHTML = '';
-
-            const payload = new URLSearchParams({
-                action: 'crearTicket',
-                correo: document.getElementById('hd-correo').value,
-                reporte: document.getElementById('hd-reporte').value,
-                linkBi: document.getElementById('hd-link').value,
-                tipo: document.getElementById('hd-tipo').value,
-                titulo: titulo,
-                descripcion: descripcion
-            });
-
-            try {
-                const res = await fetch(API_URL, { method: 'POST', body: payload });
-                const data = await res.json();
-                if (data.status === 'success') {
-                    statusEl.innerHTML = '<span style="color:#10b981;">Ticket ' + (data.idTicket || '') + ' registrado. ¡Gracias!</span>';
-                    setTimeout(cerrarHelpDesk, 1800);
-                } else {
-                    statusEl.innerHTML = '<span style="color:#ef4444;">' + (data.message || 'No se pudo registrar el ticket.') + '</span>';
+            let linkReal = '';
+            try { if (reporteActivo && reporteActivo.url) linkReal = decodeUrl(reporteActivo.url); } catch(e) {}
+            Tally.openPopup(TALLY_FORM_ID, {
+                layout: 'modal',
+                width: 500,
+                hiddenFields: {
+                    reporte: reporteActivo ? reporteActivo.nombre : '',
+                    linkbi: linkReal,
+                    correo: localStorage.getItem('oikos_user_email') || ''
                 }
-            } catch(e) {
-                statusEl.innerHTML = '<span style="color:#ef4444;">Error de red al enviar el ticket.</span>';
-            } finally {
-                btn.disabled = false;
-                btn.textContent = 'ENVIAR TICKET';
-            }
+            });
         }
 
         // ============================================================
