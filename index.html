@@ -216,12 +216,12 @@
         #helpdesk-panel {
             display: none;
             position: fixed;
-            bottom: 20px;
+            bottom: 66px; /* despejado por encima de #btn-menu-toggle (36px de alto + margen) */
             right: 20px;
             width: 420px;
             max-width: calc(100vw - 24px);
             height: 640px;
-            max-height: calc(100vh - 24px);
+            max-height: calc(100vh - 96px);
             z-index: 210000;
             background: white;
             border-radius: 18px;
@@ -514,7 +514,7 @@
 
         <iframe id="bi-frame" src=""></iframe>
 
-        <div id="bi-overlay" onclick="cerrarMenu()"></div>
+        <div id="bi-overlay" onclick="cerrarOverlayClick()"></div>
 
         <div id="shield-top-right" class="shield" onclick="securityReset()"></div>
 
@@ -620,6 +620,17 @@
             document.getElementById('btn-menu-toggle').classList.remove('open');
         }
 
+        // El fondo desenfocado (#bi-overlay) lo comparten el menú y el
+        // Help Desk; al hacer clic afuera hay que cerrar el que esté
+        // abierto en ese momento.
+        function cerrarOverlayClick() {
+            if (document.getElementById('helpdesk-panel').classList.contains('open')) {
+                cerrarHelpDesk();
+            } else {
+                cerrarMenu();
+            }
+        }
+
         // ============================================================
         // BARRA DE FECHA (botón reloj)
         // ============================================================
@@ -653,11 +664,13 @@
             });
             document.getElementById('helpdesk-frame').src = `https://tally.so/embed/${TALLY_FORM_ID}?${params.toString()}&hideTitle=1&transparentBackground=1`;
             document.getElementById('helpdesk-panel').classList.add('open');
+            document.getElementById('bi-overlay').classList.add('open'); // desenfoca el BI de fondo
         }
 
         function cerrarHelpDesk() {
             document.getElementById('helpdesk-panel').classList.remove('open');
             document.getElementById('helpdesk-frame').src = ''; // libera el iframe al cerrar
+            document.getElementById('bi-overlay').classList.remove('open');
         }
 
         // ============================================================
