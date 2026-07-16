@@ -209,69 +209,60 @@
         iframe { width:100%; height:100%; border:none; display:block; }
 
         /* =========================================================
-           HELP DESK — panel con iframe directo a Tally
+           HELP DESK — mini ventana flotante con iframe directo a
+           Tally (NO pantalla completa, queda "en el mismo entorno"
+           igual que el panel del menú)
         ========================================================= */
         #helpdesk-panel {
             display: none;
             position: fixed;
-            top: 0; left: 0;
-            width: 100vw; height: 100vh;
+            bottom: 20px;
+            right: 20px;
+            width: 420px;
+            max-width: calc(100vw - 24px);
+            height: 640px;
+            max-height: calc(100vh - 24px);
             z-index: 210000;
             background: white;
-            flex-direction: column;
+            border-radius: 18px;
+            overflow: hidden;
+            box-shadow: 0 24px 64px rgba(0,0,0,0.4);
         }
-        #helpdesk-panel.open { display: flex; }
+        #helpdesk-panel.open { display: block; }
 
-        #helpdesk-topbar {
-            flex-shrink: 0;
-            height: 52px;
-            background: linear-gradient(135deg, var(--primary-blue) 0%, var(--deep-blue) 100%);
-            display: flex;
-            align-items: center;
-            padding: 0 16px;
-            gap: 12px;
-            box-shadow: 0 3px 14px rgba(0,74,153,0.35);
-        }
-        #helpdesk-back {
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            background: rgba(255,255,255,0.14);
+        #helpdesk-frame {
+            width: 100%;
+            height: 100%;
             border: none;
-            color: white;
-            padding: 8px 14px;
-            border-radius: 10px;
-            font-family: 'Outfit', sans-serif;
-            font-weight: 700;
-            font-size: 12.5px;
-            cursor: pointer;
-            transition: background 0.2s;
+            display: block;
         }
-        #helpdesk-back:hover { background: rgba(255,255,255,0.26); }
-        #helpdesk-back svg { width: 16px; height: 16px; fill: white; }
 
-        #helpdesk-title {
-            flex: 1;
-            text-align: center;
+        /* Botón "Volver" pegado al borde inferior del mini navegador,
+           mismo lenguaje visual que #btn-menu-toggle */
+        #btn-helpdesk-volver {
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            width: 130px;
+            height: 34px;
+            background: var(--primary-blue);
+            color: white;
+            border: none;
+            border-radius: 10px 0 0 0;
             font-family: 'Outfit', sans-serif;
             font-weight: 700;
-            font-size: 14px;
-            color: white;
-            letter-spacing: 0.3px;
-        }
-        #helpdesk-newtab {
+            font-size: 12px;
+            letter-spacing: 0.5px;
+            cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
-            width: 32px; height: 32px;
-            border-radius: 8px;
-            background: rgba(255,255,255,0.14);
+            gap: 6px;
+            box-shadow: 0 -3px 12px rgba(0,74,153,0.5);
             transition: background 0.2s;
         }
-        #helpdesk-newtab:hover { background: rgba(255,255,255,0.26); }
-        #helpdesk-newtab svg { width: 15px; height: 15px; fill: white; }
-
-        #helpdesk-frame { flex: 1; }
+        #btn-helpdesk-volver:hover { background: var(--deep-blue); }
+        #btn-helpdesk-volver svg { width: 14px; height: 14px; fill: white; }
 
         /* =========================================================
            SHIELDS DE SEGURIDAD
@@ -565,19 +556,13 @@
 
     </div>
 
-    <!-- ── HELP DESK: panel propio con iframe directo a Tally ── -->
+    <!-- ── HELP DESK: mini ventana flotante con iframe directo a Tally ── -->
     <div id="helpdesk-panel">
-        <div id="helpdesk-topbar">
-            <button id="helpdesk-back" onclick="cerrarHelpDesk()">
-                <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg>
-                Volver
-            </button>
-            <span id="helpdesk-title">Help Desk</span>
-            <a id="helpdesk-newtab" href="https://tally.so/r/mDvd5X" target="_blank" rel="noopener" title="Abrir en pestaña nueva">
-                <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M19 19H5V5h7V3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2v-7h-2v7zM14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3h-7z"/></svg>
-            </a>
-        </div>
         <iframe id="helpdesk-frame" src=""></iframe>
+        <button id="btn-helpdesk-volver" onclick="cerrarHelpDesk()">
+            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg>
+            VOLVER
+        </button>
     </div>
 
     <script>
